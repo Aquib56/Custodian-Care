@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.google.gms.google-services'
 android {
     namespace "com.example.custodiancare"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
