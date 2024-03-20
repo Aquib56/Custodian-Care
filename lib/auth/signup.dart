@@ -15,7 +15,7 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign up'),
+        title: Text('Sign up'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,19 +24,19 @@ class _SignupPageState extends State<SignupPage> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            const SizedBox(height: 20.0),
+            SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () async {
                 await _registerWithEmailAndPassword();
               },
-              child: const Text('Sign up'),
+              child: Text('Sign up'),
             ),
           ],
         ),

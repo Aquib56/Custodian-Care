@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:custodiancare/pages/signup&login/signup.dart';
-import 'package:custodiancare/main.dart';  // Adjust the project name accordingly
-import 'package:custodiancare/pages/signup&login/forgot_password.dart';
+import '../auth/signup.dart';
+import 'package:custodiancare/main.dart'; // Adjust the project name accordingly
+import '../auth/forgot_password.dart';
+import '../pages/home.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: Text('Login'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -27,14 +28,14 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            const SizedBox(height: 20.0),
+            SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () async {
                 // await _signInWithEmailAndPassword();
@@ -49,21 +50,25 @@ class _LoginPageState extends State<LoginPage> {
                   print('Login failed: $e');
                 }
               },
-              child: const Text('Login'),
+              child: Text('Login'),
             ),
             TextButton(
               onPressed: () {
                 // Navigate to Signup page
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SignupPage()));
               },
-              child: const Text('Don\'t have an account? Sign up'),
+              child: Text('Don\'t have an account? Sign up'),
             ),
             TextButton(
               onPressed: () {
                 // Navigate to Forgot Password page
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ForgotPasswordPage()));
               },
-              child: const Text('Forgot Password?'),
+              child: Text('Forgot Password?'),
             ),
           ],
         ),
