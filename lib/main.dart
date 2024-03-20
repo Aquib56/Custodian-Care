@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; //
-import 'pages/login.dart';
-import 'pages/services.dart';
-import 'pages/complaints.dart';
-import 'pages/notifications.dart';
-import 'pages/profile.dart';
-import 'pages/signup.dart';
-
-
+// import 'package:flutter_svg/flutter_svg.dart'; //
+import 'pages/signup&login/login.dart';
+import 'pages/services/service_detail_page.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +23,9 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,  // This line removes the debug banner
       home: HomePage(),
+      routes: const {
+        // '/booking_details': (context) => BookingDetailsPage(), // Define the route for booking details page
+      },
     );
   }
 }
@@ -43,13 +39,13 @@ class HomePage extends StatelessWidget {
         title: Row(
           children: [
             Image.asset('assets/logo1.png', height: 50.0),
-            SizedBox(width: 10.0),
+            const SizedBox(width: 10.0),
             // Text('Service App'),
           ],
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.account_circle),
+            icon: const Icon(Icons.account_circle),
             onPressed: () {
               // Implement profile button functionality
               Navigator.push(
@@ -65,14 +61,14 @@ class HomePage extends StatelessWidget {
 
         children: [
 
-          YourCarousel([
+          YourCarousel(const [
             'assets/img1.png',
             'assets/img2.png',
             'assets/img3.png',
           ]),
           // Add other widgets as needed below the carousel
 
-          SizedBox(height: 10.0),
+          const SizedBox(height: 10.0),
           buildServices(context),
 
         ],
@@ -100,7 +96,7 @@ class YourCarousel extends StatelessWidget {
         return Builder(
           builder: (BuildContext context) {
             return Container(
-              margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+              margin: const EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4.0),
                 image: DecorationImage(
@@ -120,23 +116,16 @@ class YourCarousel extends StatelessWidget {
 Widget buildServices(BuildContext context) {
   return Column(
     children: [
-      Text(
+      const Text(
         'Services',
         style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
       ),
-      SizedBox(height: 10.0),
+      const SizedBox(height: 10.0),
       GridView.builder(
-        // shrinkWrap: true, // Prevents unexpected scrolling
-        // physics: NeverScrollableScrollPhysics(), // Disables scroll
-        // itemCount: services.length,
-        // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //   crossAxisCount: 2, // Two columns of service tiles
-        //   crossAxisSpacing: 10.0,
-        //   mainAxisSpacing: 10.0,
         shrinkWrap: true, // Prevents unexpected scrolling
-        physics: NeverScrollableScrollPhysics(), // Disables scroll
+        physics: const NeverScrollableScrollPhysics(), // Disables scroll
         itemCount: services.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4, // Four columns of service tiles
           crossAxisSpacing: 10.0, // Space between tiles horizontally
           mainAxisSpacing: 10.0, // Space between tiles vertically
@@ -146,7 +135,17 @@ Widget buildServices(BuildContext context) {
           return GestureDetector(
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => service.page),
+                // service.page
+              MaterialPageRoute(builder: (context) => ServiceDetailPage(
+                imagePath: service.imagePath,
+                banner:service.banner,
+                title: service.title,
+                category: service.category,
+                description: service.description,
+                price: service.price,
+                ratings: service.ratings,
+                photos: service.photos,
+              ),),
             ),
             child: ServiceTileCard(imagePath: service.imagePath, title: service.title),
           );
@@ -168,7 +167,7 @@ class ServiceTileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(5.0),
+      margin: const EdgeInsets.all(5.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         border: Border.all(color: Colors.grey.shade300),
@@ -178,14 +177,13 @@ class ServiceTileCard extends StatelessWidget {
         children: [
           Image.asset(
             imagePath,
-            // width: 50.0,
             width: 75.0, // Limit image width
             height: 40.0,
           ),
-          SizedBox(height: 10.0),
+          const SizedBox(height: 10.0),
           Text(
             title,
-            style: TextStyle(fontSize: 14.0),
+            style: const TextStyle(fontSize: 14.0),
           ),
         ],
       ),
@@ -196,77 +194,120 @@ class ServiceTileCard extends StatelessWidget {
 
 class ServiceTile {
   final String imagePath;
+  final String banner;
   final String title;
-  final Widget page; // This will hold the page to navigate to on click
+  final String description;
+  // final Widget page; // This will hold the page to navigate to on click
+  final String category;
+  final double price;
+  final double ratings;
+  final List<String> photos;
 
   const ServiceTile({
     required this.imagePath,
+    required this.banner,
     required this.title,
-    required this.page,
+    required this.description,
+    // required this.page,
+    required this.category,
+    required this.price,
+    required this.ratings,
+    required this.photos,
   });
 }
 
 
 final List<ServiceTile> services = [
-  ServiceTile(
+  const ServiceTile(
     imagePath: 'assets/painting.png',
+    banner:'assets/banners/sampleJob1.jpg',
     title: 'Painting',
-    // page: PaintingPage(),
-    page: LoginPage(),
+    category: 'Home Services',
+    price: 100.0,
+    ratings: 4.5,
+    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed",
+    photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
-  ServiceTile(
+  const ServiceTile(
     imagePath: 'assets/ac_repair.png',
     title: 'AC Repair',
-    // page: ACRepairPage(),
-    page: LoginPage(),
+    banner:'assets/banners/ac_repair_banner.jpg',
+    category: 'Home Services',
+    price: 100.0,
+    ratings: 4.5,
+    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
-  ServiceTile(
+  const ServiceTile(
     imagePath: 'assets/gardener.png',
     title: 'Gardener',
-    // page: GardenerPage(),
-    page: LoginPage(),
+    banner:'assets/banners/sampleJob1.jpg',
+    category: 'Home Services',
+    price: 100.0,
+    ratings: 4.5,
+    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
-  ServiceTile(
+  const ServiceTile(
     imagePath: 'assets/maid.png',
     title: 'Maid',
-    // page: MaidPage(),
-    page: LoginPage(),
+    banner:'assets/banners/sampleJob1.jpg',
+    category: 'Home Services',
+    price: 100.0,
+    ratings: 4.5,
+    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
-  ServiceTile(
+  const ServiceTile(
     imagePath: 'assets/hairdresser.png',
     title: 'Hair Care',
-    // page: MaidPage(),
-    page: LoginPage(),
+    banner:'assets/banners/sampleJob1.jpg',
+    category: 'Home Services',
+    price: 100.0,
+    ratings: 4.5,
+    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
-  ServiceTile(
+  const ServiceTile(
     imagePath: 'assets/pest-control.png',
     title: 'Pest Control',
-    // page: MaidPage(),
-    page: LoginPage(),
+    banner:'assets/banners/sampleJob1.jpg',
+    category: 'Home Services',
+    price: 100.0,
+    ratings: 4.5,
+    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
-  ServiceTile(
+  const ServiceTile(
     imagePath: 'assets/teacher.png',
     title: 'Tutions',
-    // page: MaidPage(),
-    page: LoginPage(),
+    banner:'assets/banners/sampleJob1.jpg',
+    category: 'Home Services',
+    price: 100.0,
+    ratings: 4.5,
+    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
-  ServiceTile(
+ const  ServiceTile(
     imagePath: 'assets/electrician.png',
     title: 'Electrician',
-    // page: MaidPage(),
-    page: LoginPage(),
+    banner:'assets/banners/sampleJob1.jpg',
+    category: 'Home Services',
+    price: 100.0,
+    ratings: 4.5,
+   description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
-  ServiceTile(
+  const ServiceTile(
     imagePath: 'assets/plumber.png',
     title: 'Plumbing',
-    // page: MaidPage(),
-    page: LoginPage(),
+    banner:'assets/banners/sampleJob1.jpg',
+    category: 'Home Services',
+    price: 100.0,
+    ratings: 4.5,
+    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
-  ServiceTile(
-    imagePath: 'assets/aio.png',
-    title: 'Others',
-    // page: MaidPage(),
-    page: LoginPage(),
-  ),
+
 ];
 
