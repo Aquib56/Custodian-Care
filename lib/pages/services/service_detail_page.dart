@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '.././booking/booking_details.dart';
 
 class ServiceDetailPage extends StatelessWidget {
   final String imagePath;
@@ -120,6 +121,10 @@ class ServiceDetailPage extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () {
                           // Implement book now button functionality
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => BookingPage()),
+                          );
                         },
                         child: const Text('Book Now'),
                       ),
