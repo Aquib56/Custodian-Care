@@ -57,8 +57,8 @@ class _HomePageState extends State<HomePage> {
           children: [
             YourCarousel([
               'assets/img1.png',
-              'assets/img2.png',
-              'assets/img3.png',
+              'assets/img1.png',
+              'assets/img1.png',
             ]),
             // Add other widgets as needed below the carousel
             // SizedBox(height: 5.0),
