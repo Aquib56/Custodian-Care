@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                   child: MyCard(
                     imagePath: 'assets/img3.png',
                     name: 'Name 1',
-                    pageRoute: ServiceDetailPage(),
+                    pageRoute: LoginPage(),
                     cardheight: 200,
                     cardwidth: 200,
                   ),
