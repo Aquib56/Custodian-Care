@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../auth/signup.dart';
-import 'package:custodiancare/main.dart'; // Adjust the project name accordingly
-import '../auth/forgot_password.dart';
-import '../pages/home.dart';
+import 'package:custodiancare/pages/signup.dart';
+import 'package:custodiancare/main.dart';  // Adjust the project name accordingly
+import 'package:custodiancare/pages/forgot_password.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -55,18 +54,14 @@ class _LoginPageState extends State<LoginPage> {
             TextButton(
               onPressed: () {
                 // Navigate to Signup page
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SignupPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
               },
               child: Text('Don\'t have an account? Sign up'),
             ),
             TextButton(
               onPressed: () {
                 // Navigate to Forgot Password page
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ForgotPasswordPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordPage()));
               },
               child: Text('Forgot Password?'),
             ),
