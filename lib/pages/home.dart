@@ -168,7 +168,17 @@ class _HomePageState extends State<HomePage> {
                   child: MyCard(
                     imagePath: 'assets/img3.png',
                     name: 'Name 1',
-                    pageRoute: ServiceDetailPage(),
+                    pageRoute: ServiceDetailPage(
+                      imagePath: 'assets/img3.png', // Pass image path
+                      title: 'Title of Service', // Provide a title
+                      banner: 'Banner Text', // Provide banner text
+                      category: 'Service Category', // Specify category
+                      price: 10.99, // Example price
+                      ratings: 4.5, // Example ratings
+                      photos: ['photo1.jpg', 'photo2.jpg'], // Example photos
+                      description:
+                          'Description of the service', // Provide description
+                    ),
                     cardheight: 200,
                     cardwidth: 200,
                   ),
