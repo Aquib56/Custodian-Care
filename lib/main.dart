@@ -5,13 +5,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'pages/signup&login/login.dart';
 import 'pages/services/service_detail_page.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();  // Initialize Firebase
+  await Firebase.initializeApp(); // Initialize Firebase
   runApp(MyApp());
   // runApp(MyApp());
 }
 
+// Test
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      debugShowCheckedModeBanner: false,  // This line removes the debug banner
+      debugShowCheckedModeBanner: false, // This line removes the debug banner
       home: HomePage(),
       routes: const {
         // '/booking_details': (context) => BookingDetailsPage(), // Define the route for booking details page
@@ -29,7 +30,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 
 class HomePage extends StatelessWidget {
   @override
@@ -52,15 +52,12 @@ class HomePage extends StatelessWidget {
                 context,
                 MaterialPageRoute(builder: (context) => LoginPage()),
               );
-
             },
           ),
         ],
       ),
       body: Column(
-
         children: [
-
           YourCarousel(const [
             'assets/img1.png',
             'assets/img2.png',
@@ -70,11 +67,8 @@ class HomePage extends StatelessWidget {
 
           const SizedBox(height: 10.0),
           buildServices(context),
-
         ],
-
       ),
-
     );
   }
 }
@@ -96,13 +90,13 @@ class YourCarousel extends StatelessWidget {
         return Builder(
           builder: (BuildContext context) {
             return Container(
-              margin: const EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+              margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4.0),
                 image: DecorationImage(
                   image: AssetImage(imagePath),
                   // fit: BoxFit.fill,
-                  fit:BoxFit.contain,
+                  fit: BoxFit.contain,
                 ),
               ),
             );
@@ -135,19 +129,22 @@ Widget buildServices(BuildContext context) {
           return GestureDetector(
             onTap: () => Navigator.push(
               context,
-                // service.page
-              MaterialPageRoute(builder: (context) => ServiceDetailPage(
-                imagePath: service.imagePath,
-                banner:service.banner,
-                title: service.title,
-                category: service.category,
-                description: service.description,
-                price: service.price,
-                ratings: service.ratings,
-                photos: service.photos,
-              ),),
+              // service.page
+              MaterialPageRoute(
+                builder: (context) => ServiceDetailPage(
+                  imagePath: service.imagePath,
+                  banner: service.banner,
+                  title: service.title,
+                  category: service.category,
+                  description: service.description,
+                  price: service.price,
+                  ratings: service.ratings,
+                  photos: service.photos,
+                ),
+              ),
             ),
-            child: ServiceTileCard(imagePath: service.imagePath, title: service.title),
+            child: ServiceTileCard(
+                imagePath: service.imagePath, title: service.title),
           );
         },
       ),
@@ -191,7 +188,6 @@ class ServiceTileCard extends StatelessWidget {
   }
 }
 
-
 class ServiceTile {
   final String imagePath;
   final String banner;
@@ -216,98 +212,104 @@ class ServiceTile {
   });
 }
 
-
 final List<ServiceTile> services = [
   const ServiceTile(
     imagePath: 'assets/painting.png',
-    banner:'assets/banners/sampleJob1.jpg',
+    banner: 'assets/banners/sampleJob1.jpg',
     title: 'Painting',
     category: 'Home Services',
     price: 100.0,
     ratings: 4.5,
-    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed",
+    description:
+        "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed",
     photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
   const ServiceTile(
     imagePath: 'assets/ac_repair.png',
     title: 'AC Repair',
-    banner:'assets/banners/ac_repair_banner.jpg',
+    banner: 'assets/banners/ac_repair_banner.jpg',
     category: 'Home Services',
     price: 100.0,
     ratings: 4.5,
-    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    description:
+        "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
     photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
   const ServiceTile(
     imagePath: 'assets/gardener.png',
     title: 'Gardener',
-    banner:'assets/banners/sampleJob1.jpg',
+    banner: 'assets/banners/sampleJob1.jpg',
     category: 'Home Services',
     price: 100.0,
     ratings: 4.5,
-    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    description:
+        "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
     photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
   const ServiceTile(
     imagePath: 'assets/maid.png',
     title: 'Maid',
-    banner:'assets/banners/sampleJob1.jpg',
+    banner: 'assets/banners/sampleJob1.jpg',
     category: 'Home Services',
     price: 100.0,
     ratings: 4.5,
-    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    description:
+        "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
     photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
   const ServiceTile(
     imagePath: 'assets/hairdresser.png',
     title: 'Hair Care',
-    banner:'assets/banners/sampleJob1.jpg',
+    banner: 'assets/banners/sampleJob1.jpg',
     category: 'Home Services',
     price: 100.0,
     ratings: 4.5,
-    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    description:
+        "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
     photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
   const ServiceTile(
     imagePath: 'assets/pest-control.png',
     title: 'Pest Control',
-    banner:'assets/banners/sampleJob1.jpg',
+    banner: 'assets/banners/sampleJob1.jpg',
     category: 'Home Services',
     price: 100.0,
     ratings: 4.5,
-    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    description:
+        "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
     photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
   const ServiceTile(
     imagePath: 'assets/teacher.png',
     title: 'Tutions',
-    banner:'assets/banners/sampleJob1.jpg',
+    banner: 'assets/banners/sampleJob1.jpg',
     category: 'Home Services',
     price: 100.0,
     ratings: 4.5,
-    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    description:
+        "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
     photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
- const  ServiceTile(
+  const ServiceTile(
     imagePath: 'assets/electrician.png',
     title: 'Electrician',
-    banner:'assets/banners/sampleJob1.jpg',
+    banner: 'assets/banners/sampleJob1.jpg',
     category: 'Home Services',
     price: 100.0,
     ratings: 4.5,
-   description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    description:
+        "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
     photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
   const ServiceTile(
     imagePath: 'assets/plumber.png',
     title: 'Plumbing',
-    banner:'assets/banners/sampleJob1.jpg',
+    banner: 'assets/banners/sampleJob1.jpg',
     category: 'Home Services',
     price: 100.0,
     ratings: 4.5,
-    description: "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
+    description:
+        "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
     photos: ['assets/banners/sampleJob1.jpg', 'assets/banners/sampleJob1.jpg'],
   ),
-
 ];
-
