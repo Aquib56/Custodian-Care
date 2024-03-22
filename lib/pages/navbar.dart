@@ -39,22 +39,22 @@ class CustomNavBar extends StatelessWidget {
             isSelected: currentIndex == 1,
             onTap: () => onItemTap(1),
           ),
-          GestureDetector(
-            onTap: () => onItemTap(2),
-            child: Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: () => onItemTap(2),
+          //   child: Container(
+          //     width: 60,
+          //     height: 60,
+          //     decoration: BoxDecoration(
+          //       color: Colors.blue,
+          //       shape: BoxShape.circle,
+          //     ),
+          //     child: Icon(
+          //       Icons.add,
+          //       color: Colors.white,
+          //       size: 30,
+          //     ),
+          //   ),
+          // ),
           NavBarItem(
             iconPath: 'assets/icons/service.svg',
             isSelected: currentIndex == 3,

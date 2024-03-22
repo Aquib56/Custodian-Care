@@ -1,44 +1,37 @@
 import 'package:flutter/material.dart';
+// import '.././booking/booking_details.dart';
+import '../pages/home.dart';
 
 class ServiceDetailPage extends StatelessWidget {
-  final String imagePath;
-  final String title;
-  final String banner;
-  final String category;
-  final double price;
-  final double ratings;
-  final List<String> photos;
-  final String description; // New field for service description
+  final List<Map<String, dynamic>> serviceData;
+  final int index;
 
   const ServiceDetailPage({
-    required this.imagePath,
-    required this.title,
-    required this.banner,
-    required this.category,
-    required this.price,
-    required this.ratings,
-    required this.photos,
-    required this.description, // Add description to the constructor
+    required this.serviceData,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> service = serviceData[index];
+    print(service);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(service['title']),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.asset(banner),
+            Image.asset(service['banner']),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    service['title'],
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -46,12 +39,12 @@ class ServiceDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Category: $category',
+                    'Category: ${service['category']}',
                     style: const TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Price: \$${price.toStringAsFixed(2)}',
+                    'Price: \$${service['price'].toStringAsFixed(2)}',
                     style: const TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 8),
@@ -66,7 +59,7 @@ class ServiceDetailPage extends StatelessWidget {
                         color: Colors.amber,
                       ),
                       Text(
-                        ratings.toString(),
+                        service['ratings'].toString(),
                         style: const TextStyle(fontSize: 18),
                       ),
                     ],
@@ -78,7 +71,7 @@ class ServiceDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    description,
+                    service['description'],
                     style: TextStyle(fontSize: 16),
                   ),
                   const Text(
@@ -89,7 +82,8 @@ class ServiceDetailPage extends StatelessWidget {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: photos.map((photo) {
+                      children:
+                          (service['photos'] as List<String>).map((photo) {
                         return GestureDetector(
                           onTap: () {
                             // Implement photo enlargement
@@ -120,6 +114,10 @@ class ServiceDetailPage extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () {
                           // Implement book now button functionality
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          );
                         },
                         child: const Text('Book Now'),
                       ),

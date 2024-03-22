@@ -3,6 +3,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../auth/login.dart';
 import '../pages/navbar.dart';
 import '../pages/servicepage.dart';
+import '../pages/category.dart';
+import '../pages/profile.dart';
+import '../data/serviceMap.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,10 +22,25 @@ class _HomePageState extends State<HomePage> {
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
-      if (index == 4) {
+      if (index == 2) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+          MaterialPageRoute(builder: (context) => ProfilePage()),
+        );
+      } else if (index == 0) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else if (index == 1) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CategoryPage()),
+        );
+      } else if (index == 4) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ProfilePage()),
         );
       }
     });
@@ -57,8 +75,8 @@ class _HomePageState extends State<HomePage> {
           children: [
             YourCarousel([
               'assets/img1.png',
-              'assets/img1.png',
-              'assets/img1.png',
+              'assets/img2.png',
+              'assets/img3.png',
             ]),
             // Add other widgets as needed below the carousel
             // SizedBox(height: 5.0),
@@ -76,6 +94,10 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CategoryPage()),
+                    );
                     // Action to perform when the button is pressed
                   },
                   child: Text('All Services >'),
@@ -89,25 +111,34 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     MyCard(
-                      imagePath: 'assets/img1.png',
-                      name: 'Plumber',
-                      pageRoute: LoginPage(),
+                      imagePath: 'assets/cleaning.png',
+                      name: 'Cleaning',
+                      pageRoute: ServiceDetailPage(
+                        serviceData: services,
+                        index: 0,
+                      ),
                       cardheight:
                           ServiceCardDimensions["servicesHeight"] ?? 100,
                       cardwidth: 120,
                     ),
                     MyCard(
-                      imagePath: 'assets/img2.png',
-                      name: 'Ac Repair',
-                      pageRoute: LoginPage(),
+                      imagePath: 'assets/electrician.png',
+                      name: 'Electrician',
+                      pageRoute: ServiceDetailPage(
+                        serviceData: services,
+                        index: 0,
+                      ),
                       cardheight:
                           ServiceCardDimensions["servicesHeight"] ?? 100,
                       cardwidth: 120,
                     ),
                     MyCard(
-                      imagePath: 'assets/img3.png',
-                      name: 'Labour',
-                      pageRoute: LoginPage(),
+                      imagePath: 'assets/painting.png',
+                      name: 'Painting',
+                      pageRoute: ServiceDetailPage(
+                        serviceData: services,
+                        index: 0,
+                      ),
                       cardheight:
                           ServiceCardDimensions["servicesHeight"] ?? 120,
                       cardwidth: 120,
@@ -120,25 +151,34 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     MyCard(
-                      imagePath: 'assets/img2.png',
-                      name: 'Name 1',
-                      pageRoute: LoginPage(),
+                      imagePath: 'assets/plumber.png',
+                      name: 'Plumber',
+                      pageRoute: ServiceDetailPage(
+                        serviceData: services,
+                        index: 0,
+                      ),
                       cardheight:
                           ServiceCardDimensions["servicesHeight"] ?? 120,
                       cardwidth: 120,
                     ),
                     MyCard(
-                      imagePath: 'assets/img1.png',
-                      name: 'Name 1',
-                      pageRoute: LoginPage(),
+                      imagePath: 'assets/maid.png',
+                      name: 'Maid',
+                      pageRoute: ServiceDetailPage(
+                        serviceData: services,
+                        index: 0,
+                      ),
                       cardheight:
                           ServiceCardDimensions["servicesHeight"] ?? 120,
                       cardwidth: 120,
                     ),
                     MyCard(
-                      imagePath: 'assets/img3.png',
-                      name: 'Name 1',
-                      pageRoute: LoginPage(),
+                      imagePath: 'assets/hairdresser.png',
+                      name: 'Hairdresser',
+                      pageRoute: ServiceDetailPage(
+                        serviceData: services,
+                        index: 0,
+                      ),
                       cardheight:
                           ServiceCardDimensions["servicesHeight"] ?? 120,
                       cardwidth: 120,
@@ -156,7 +196,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
-                  child: MyCard(
+                  child: MyCard2(
                     imagePath: 'assets/img1.png',
                     name: 'Name 1',
                     pageRoute: LoginPage(),
@@ -166,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Expanded(
                   child: MyCard(
-                    imagePath: 'assets/img3.png',
+                    imagePath: 'assets/hairdresser.png',
                     name: 'Name 1',
                     pageRoute: LoginPage(),
                     cardheight: 200,
@@ -228,6 +268,59 @@ class MyCard extends StatelessWidget {
   final Widget pageRoute;
 
   const MyCard(
+      {Key? key,
+      required this.imagePath,
+      required this.name,
+      required this.pageRoute,
+      required this.cardheight,
+      required this.cardwidth})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => pageRoute),
+        );
+      },
+      child: Card(
+        elevation: 5,
+        // color: Colors.cyan[200],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: cardwidth, // Adjust the width of the image as needed
+              height: cardheight, // Adjust the height of the image as needed
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.contain,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                name,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyCard2 extends StatelessWidget {
+  final String imagePath;
+  final String name;
+  final double cardheight;
+  final double cardwidth;
+  final Widget pageRoute;
+
+  const MyCard2(
       {Key? key,
       required this.imagePath,
       required this.name,
