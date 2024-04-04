@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import '.././booking/booking_details.dart';
 import '../pages/home.dart';
+import '../pages/nav.dart';
 
 class ServiceDetailPage extends StatelessWidget {
   final List<Map<String, dynamic>> serviceData;
@@ -116,7 +117,8 @@ class ServiceDetailPage extends StatelessWidget {
                           // Implement book now button functionality
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
+                            MaterialPageRoute(
+                                builder: (context) => BottomNavBar()),
                           );
                         },
                         child: const Text('Book Now'),

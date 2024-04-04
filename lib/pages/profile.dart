@@ -95,10 +95,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-      bottomNavigationBar: CustomNavBar(
-        onItemTap: _onItemTapped,
-        currentIndex: _currentIndex,
-      ),
     );
   }
 }
