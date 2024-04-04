@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 // import '.././booking/booking_details.dart';
 import '../pages/home.dart';
-import '../pages/nav.dart';
+import '../components/nav.dart';
 
 class ServiceDetailPage extends StatelessWidget {
   final List<Map<String, dynamic>> serviceData;

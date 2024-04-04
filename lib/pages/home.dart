@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../auth/login.dart';
 import '../pages/servicepage.dart';
-import '../pages/category.dart';
+import '../pages/location&map.dart';
 import '../data/serviceMap.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,7 +12,14 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.location_on)),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MapPage()),
+                  );
+                },
+                icon: Icon(Icons.location_on)),
             Text(
               '8, Shepherd Rd, Police Colony, Nagpada, Byculla',
               style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),

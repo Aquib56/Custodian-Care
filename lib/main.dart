@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../pages/home.dart';
-import '../pages/nav.dart';
+import '../components/nav.dart';
 import '../pages/init.dart';
 import 'package:get/get.dart';
 
