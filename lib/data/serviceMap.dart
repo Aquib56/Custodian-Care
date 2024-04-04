@@ -1,4 +1,4 @@
-final List<Map<String, dynamic>> services = [
+final List<Map<String, dynamic>> servicesData = [
   {
     'imagePath': 'assets/cleaningService.jpeg',
     'banner': 'assets/cleaningService.jpeg',
@@ -8,7 +8,7 @@ final List<Map<String, dynamic>> services = [
     'ratings': 4.5,
     'description':
         "Customers can easily book a Cleaning service through the app by specifying their requirements such as the type of Cleaning needed",
-    'photos': ['assets/cleaningService.jpeg', 'assets/cleaningService.jpeg'],
+    'photos': ['assets/cleaningService.jpeg', 'assets/cleaningService1.jpeg'],
   },
   {
     'imagePath': 'assets/electricianService.jpeg',
@@ -18,7 +18,7 @@ final List<Map<String, dynamic>> services = [
     'price': 100.0,
     'ratings': 4.5,
     'description':
-        "Customers can easily book a Cleaning service through the app by specifying their requirements such as the type of Cleaning needed",
+        "Customers can easily book a Electrician service through the app by specifying their requirements such as the type of electrician needed",
     'photos': [
       'assets/electricianService.jpeg',
       'assets/electricianService.jpeg'
@@ -26,8 +26,8 @@ final List<Map<String, dynamic>> services = [
   },
   {
     'imagePath': 'assets/PaintingService',
-    'title': 'Gardener',
-    'banner': 'assets/PaintingService',
+    'title': 'Painting',
+    'banner': 'assets/PaintingService.jpeg',
     'category': 'Home Services',
     'price': 100.0,
     'ratings': 4.5,
@@ -41,7 +41,7 @@ final List<Map<String, dynamic>> services = [
   {
     'imagePath': 'assets/maid.png',
     'title': 'Maid',
-    'banner': 'assets/banners/sampleJob1.jpg',
+    'banner': 'assets/haridresserService.jpeg',
     'category': 'Home Services',
     'price': 100.0,
     'ratings': 4.5,
