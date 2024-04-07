@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import '.././booking/booking_details.dart';
 import '../pages/home.dart';
 import '../components/nav.dart';
+import '../pages/technicianAssignment.dart';
 
 class ServiceDetailPage extends StatelessWidget {
   final List<Map<String, dynamic>> serviceData;
@@ -15,7 +16,6 @@ class ServiceDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> service = serviceData[index];
-    print(service);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,11 +39,11 @@ class ServiceDetailPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    'Category: ${service['category']}',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 8),
+                  // Text(
+                  //   'Category: ${service['category']}',
+                  //   style: const TextStyle(fontSize: 18),
+                  // ),
+                  // const SizedBox(height: 8),
                   Text(
                     'Price: \$${service['price'].toStringAsFixed(2)}',
                     style: const TextStyle(fontSize: 18),
@@ -108,17 +108,11 @@ class ServiceDetailPage extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Implement message button functionality
-                        },
-                        child: const Text('Message'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Implement book now button functionality
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => BottomNavBar()),
+                                builder: (context) => TechnicianDetailPage(
+                                    selectedCategories: [service['category']])),
                           );
                         },
                         child: const Text('Book Now'),

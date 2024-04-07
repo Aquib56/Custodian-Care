@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../auth/login.dart';
 import '../pages/servicepage.dart';
 import '../pages/location&map.dart';
+import '../pages/category.dart';
 import '../data/serviceMap.dart';
 
 class HomePage extends StatelessWidget {
@@ -357,7 +358,7 @@ final List<ServiceTile> services = [
     // page: PaintingPage(),
     page: ServiceDetailPage(
       serviceData: servicesData,
-      index: 2,
+      index: 1,
     ),
   ),
   ServiceTile(
@@ -427,10 +428,7 @@ final List<ServiceTile> services = [
     imagePath: 'assets/more.png',
     title: 'More..',
     // page: MaidPage(),
-    page: ServiceDetailPage(
-      serviceData: servicesData,
-      index: 2,
-    ),
+    page: CategoryPage(),
   ),
 
   // ServiceTile(
