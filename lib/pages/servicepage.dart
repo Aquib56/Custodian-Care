@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // import '.././booking/booking_details.dart'; // Remove unused import
 import '../pages/home.dart';
 import '../components/nav.dart';
-import '../pages/technicianAssignment.dart';
+import 'technician_assignment.dart';
 
 class ServiceDetailPage extends StatelessWidget {
   final Map<String, dynamic> serviceData;

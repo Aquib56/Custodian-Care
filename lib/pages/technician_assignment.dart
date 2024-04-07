@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../pages/booking_confirmation.dart';
 
 class TechnicianDetailPage extends StatefulWidget {
   final List<String> selectedCategories;
@@ -64,6 +65,10 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
                     'Rating: ${_highestRatedTechnician!.rating.toStringAsFixed(1)}',
                     style: TextStyle(fontSize: 16.0),
                   ),
+                  ElevatedButton(
+                    onPressed: () => _initiateBooking(context),
+                    child: Text("Confirm"),
+                  ),
                   // Add more details about the technician here (optional)
                 ],
               ),
@@ -74,6 +79,25 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
             ),
     );
   }
+
+  Future<void> _initiateBooking(BuildContext context) async {
+    // Generate a random booking ID (implement in BookingConfirmationPage)
+    // final String bookingId = '${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(1000)}';
+
+    final technicianName = _highestRatedTechnician!.name;
+    final DateTime bookedTime = DateTime.now();
+
+    // Navigate to BookingConfirmationPage with technician name and booked time
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BookingConfirmationPage(
+          technicianName: technicianName,
+          bookedTime: bookedTime,
+        ),
+      ),
+    );
+  }
 }
 
 // Define your Technician class with array of categories
@@ -82,8 +106,11 @@ class Technician {
   final double rating;
   final List<String> categories;
 
-  Technician(
-      {required this.name, required this.rating, required this.categories});
+  Technician({
+    required this.name,
+    required this.rating,
+    required this.categories,
+  });
 
   factory Technician.fromFirestore(Map<String, dynamic> data) => Technician(
         name: data['name'] as String,
