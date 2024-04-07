@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
-// import '.././booking/booking_details.dart';
+// import '.././booking/booking_details.dart'; // Remove unused import
 import '../pages/home.dart';
 import '../components/nav.dart';
 import '../pages/technicianAssignment.dart';
 
 class ServiceDetailPage extends StatelessWidget {
-  final List<Map<String, dynamic>> serviceData;
-  final int index;
+  final Map<String, dynamic> serviceData;
+  final String serviceKey;
 
   const ServiceDetailPage({
     required this.serviceData,
-    required this.index,
+    required this.serviceKey,
   });
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> service = serviceData[index];
+    final Map<String, dynamic> service = serviceData[serviceKey];
+
+    if (service == null) {
+      // Handle the case where the service key is not found in the map
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Service Not Found'),
+        ),
+        body: const Center(
+          child: Text('The requested service is not available.'),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +52,7 @@ class ServiceDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   // Text(
-                  //   'Category: ${service['category']}',
+                  //   'Category: ${service['category']}', // Commented out, might not be needed
                   //   style: const TextStyle(fontSize: 18),
                   // ),
                   // const SizedBox(height: 8),
@@ -83,23 +95,22 @@ class ServiceDetailPage extends StatelessWidget {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children:
-                          (service['photos'] as List<String>).map((photo) {
-                        return GestureDetector(
-                          onTap: () {
-                            // Implement photo enlargement
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              photo,
-                              width: 200,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                      children: (service['photos'] as List<String>)
+                          .map((photo) => GestureDetector(
+                                onTap: () {
+                                  // Implement photo enlargement
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    photo,
+                                    width: 200,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -111,8 +122,12 @@ class ServiceDetailPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => TechnicianDetailPage(
-                                    selectedCategories: [service['category']])),
+                              builder: (context) => TechnicianDetailPage(
+                                selectedCategories: [
+                                  serviceKey
+                                ], // Assuming TechnicianDetailPage uses categories
+                              ),
+                            ),
                           );
                         },
                         child: const Text('Book Now'),

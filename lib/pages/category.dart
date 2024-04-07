@@ -1,3 +1,152 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import '../pages/servicepage.dart';
+import '../data/serviceMap.dart';
+
+class CategoryPage extends StatelessWidget {
+  final CollectionReference categories =
+      FirebaseFirestore.instance.collection('serviceCategories');
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        primaryColor: Colors.blueAccent,
+        cardColor: Color.fromARGB(253, 255, 255, 255),
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Categories',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.blue[100],
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: categories.snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            final List<DocumentSnapshot> documents = snapshot.data!.docs;
+
+            return ListView.builder(
+              itemCount: documents.length,
+              itemBuilder: (context, index) {
+                final category = Category.fromSnapshot(documents[index]);
+                return CategoryCard(category: category);
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class Category {
+  final String name;
+  final IconData icon;
+  final String description;
+
+  const Category(
+      {required this.name, required this.icon, required this.description});
+
+  factory Category.fromSnapshot(DocumentSnapshot snapshot) {
+    return Category(
+      name: snapshot['name'] as String,
+      icon: IconData(snapshot['icon'] as int,
+          fontFamily:
+              'MaterialIcons'), // Assuming icon is stored as an integer code
+      description: snapshot['description'] as String,
+    );
+  }
+}
+
+class CategoryCard extends StatelessWidget {
+  final Category category;
+
+  const CategoryCard({Key? key, required this.category}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.all(8.0),
+      color: Theme.of(context).cardColor,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ServiceDetailPage(
+                serviceData: servicesData,
+                serviceKey: "Painting",
+              ),
+            ),
+          );
+        },
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Icon(category.icon, size: 48.0),
+              SizedBox(width: 16.0),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      category.name,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      category.description,
+                      style: TextStyle(fontSize: 16.0, color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// class CategoryDetailPage extends StatelessWidget {
+//   final Category category;
+
+//   const CategoryDetailPage({Key? key, required this.category})
+//       : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(category.name),
+//       ),
+//       body: Center(
+//         child: Text(
+//           'Details of ${category.name}',
+//           style: TextStyle(fontSize: 24.0),
+//         ),
+//       ),
+//     );
+//   }
+// }
 // import 'package:flutter/material.dart';
 
 // class CategoryPage extends StatelessWidget {
@@ -148,147 +297,4 @@
 //   }
 // }
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
-class CategoryPage extends StatelessWidget {
-  final CollectionReference categories =
-      FirebaseFirestore.instance.collection('serviceCategories');
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primaryColor: Colors.blueAccent,
-        cardColor: Color.fromARGB(253, 255, 255, 255),
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Categories',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.blue[100],
-        ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: categories.snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            }
-
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            }
-
-            final List<DocumentSnapshot> documents = snapshot.data!.docs;
-
-            return ListView.builder(
-              itemCount: documents.length,
-              itemBuilder: (context, index) {
-                final category = Category.fromSnapshot(documents[index]);
-                return CategoryCard(category: category);
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class Category {
-  final String name;
-  final IconData icon;
-  final String description;
-
-  const Category(
-      {required this.name, required this.icon, required this.description});
-
-  factory Category.fromSnapshot(DocumentSnapshot snapshot) {
-    return Category(
-      name: snapshot['name'] as String,
-      icon: IconData(snapshot['icon'] as int,
-          fontFamily:
-              'MaterialIcons'), // Assuming icon is stored as an integer code
-      description: snapshot['description'] as String,
-    );
-  }
-}
-
-class CategoryCard extends StatelessWidget {
-  final Category category;
-
-  const CategoryCard({Key? key, required this.category}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(8.0),
-      color: Theme.of(context).cardColor,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CategoryDetailPage(category: category),
-            ),
-          );
-        },
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Icon(category.icon, size: 48.0),
-              SizedBox(width: 16.0),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      category.name,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      category.description,
-                      style: TextStyle(fontSize: 16.0, color: Colors.black),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CategoryDetailPage extends StatelessWidget {
-  final Category category;
-
-  const CategoryDetailPage({Key? key, required this.category})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(category.name),
-      ),
-      body: Center(
-        child: Text(
-          'Details of ${category.name}',
-          style: TextStyle(fontSize: 24.0),
-        ),
-      ),
-    );
-  }
-}
