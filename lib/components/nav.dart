@@ -1,11 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import '../pages/home.dart';
 import '../pages/category.dart';
 import '../pages/profile.dart';
 import '../auth/login.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 
 class BottomNavBar extends StatefulWidget {
   @override
@@ -17,9 +15,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   final List<Widget> _pages = [
     HomePage(),
-    ProfilePage(),
     CategoryPage(),
     LoginPage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -42,7 +40,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            label: 'Seach',
+            label: 'Search',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),

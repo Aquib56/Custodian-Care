@@ -31,11 +31,16 @@ dependencies:
   flutter:
     sdk: flutter
   carousel_slider: ^4.2.1
-  firebase_auth: ^4.14.0
-  firebase_core: ^2.22.0
+  material: ^1.0.0+2
+  # Location and Map
   google_maps_flutter: ^2.5.3
   geolocator: ^11.0.0
   geocoding: ^3.0.0
+
+  # Firebase
+  cloud_firestore: ^4.15.8
+  firebase_auth: ^4.14.0
+  firebase_core: ^2.22.0
   
 
   # The following adds the Cupertino Icons font to your application.

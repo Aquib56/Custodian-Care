@@ -3,7 +3,7 @@ final List<Map<String, dynamic>> servicesData = [
     'imagePath': 'assets/cleaningService.jpeg',
     'banner': 'assets/cleaningService.jpeg',
     'title': 'Cleaning',
-    'category': 'Home Services',
+    'category': 'Plumber',
     'price': 100.0,
     'ratings': 4.5,
     'description':
@@ -14,7 +14,7 @@ final List<Map<String, dynamic>> servicesData = [
     'imagePath': 'assets/electricianService.jpeg',
     'banner': 'assets/electricianService.jpeg',
     'title': 'Cleaning',
-    'category': 'Home Services',
+    'category': 'Plumber',
     'price': 100.0,
     'ratings': 4.5,
     'description':
@@ -26,7 +26,7 @@ final List<Map<String, dynamic>> servicesData = [
   },
   {
     'imagePath': 'assets/PaintingService',
-    'title': 'Painting',
+    'title': 'Plumber',
     'banner': 'assets/PaintingService.jpeg',
     'category': 'Home Services',
     'price': 100.0,
