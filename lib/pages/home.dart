@@ -21,9 +21,12 @@ class HomePage extends StatelessWidget {
                   );
                 },
                 icon: Icon(Icons.location_on)),
-            Text(
-              '8, Shepherd Rd, Police Colony, Nagpada, Byculla',
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                '8, Shepherd Rd, Police Colony, Nagpada, Byculla',
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis, // Handle overflow gracefully
+              ),
             ),
           ],
         ),
@@ -38,6 +41,7 @@ class HomePage extends StatelessWidget {
             },
           ),
         ],
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -358,7 +362,7 @@ final List<ServiceTile> services = [
     // page: PaintingPage(),
     page: ServiceDetailPage(
       serviceData: servicesData,
-      index: 1,
+      serviceKey: "Painting",
     ),
   ),
   ServiceTile(
@@ -367,7 +371,7 @@ final List<ServiceTile> services = [
     // page: MaidPage(),
     page: ServiceDetailPage(
       serviceData: servicesData,
-      index: 2,
+      serviceKey: "Painting",
     ),
   ),
   // ServiceTile(
@@ -376,7 +380,7 @@ final List<ServiceTile> services = [
   //   // page: ACRepairPage(),
   //   page: ServiceDetailPage(
   //      serviceData: servicesData,
-  //    index: 2,
+  //    serviceKey: "Painting",
   // ),
   // ),
   ServiceTile(
@@ -385,7 +389,7 @@ final List<ServiceTile> services = [
     // page: GardenerPage(),
     page: ServiceDetailPage(
       serviceData: servicesData,
-      index: 2,
+      serviceKey: "Painting",
     ),
   ),
   ServiceTile(
@@ -394,7 +398,7 @@ final List<ServiceTile> services = [
     // page: MaidPage(),
     page: ServiceDetailPage(
       serviceData: servicesData,
-      index: 2,
+      serviceKey: "Painting",
     ),
   ),
   ServiceTile(
@@ -403,7 +407,7 @@ final List<ServiceTile> services = [
     // page: MaidPage(),
     page: ServiceDetailPage(
       serviceData: servicesData,
-      index: 2,
+      serviceKey: "Painting",
     ),
   ),
   ServiceTile(
@@ -412,7 +416,7 @@ final List<ServiceTile> services = [
     // page: MaidPage(),
     page: ServiceDetailPage(
       serviceData: servicesData,
-      index: 2,
+      serviceKey: "Painting",
     ),
   ),
   ServiceTile(
@@ -421,7 +425,7 @@ final List<ServiceTile> services = [
     // page: MaidPage(),
     page: ServiceDetailPage(
       serviceData: servicesData,
-      index: 2,
+      serviceKey: "Painting",
     ),
   ),
   ServiceTile(
@@ -472,7 +476,7 @@ final List<ServiceTile> services = [
 //                       name: 'Painting',
 //                       pageRoute: ServiceDetailPage(
 //                         serviceData: services,
-//                         index: 2,
+//                         serviceKey: "Painting",
 //                       ),
 //                       cardheight:
 //                           ServiceCardDimensions["servicesHeight"] ?? 120,
@@ -512,7 +516,7 @@ final List<ServiceTile> services = [
 //                       name: 'Hairdresser',
 //                       pageRoute: ServiceDetailPage(
 //                         serviceData: services,
-//                         index: 2,
+//                         serviceKey: "Painting",
 //                       ),
 //                       cardheight:
 //                           ServiceCardDimensions["servicesHeight"] ?? 120,
