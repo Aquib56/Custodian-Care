@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../pages/home.dart';
 import '../pages/category.dart';
 import '../pages/profile.dart';
-import '../auth/login.dart';
+import '../pages/bookings.dart';
 
 class BottomNavBar extends StatefulWidget {
   @override
@@ -16,7 +16,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final List<Widget> _pages = [
     HomePage(),
     CategoryPage(),
-    LoginPage(),
+    BookingsPage(),
     ProfilePage(),
   ];
 
@@ -43,8 +43,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Cart',
+            icon: Icon(Icons.receipt_rounded),
+            label: 'Bookings',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
