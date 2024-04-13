@@ -1,7 +1,6 @@
 import 'package:custodiancare/components/nav.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../pages/home.dart'; // Import your home page
 import '../auth/signup.dart'; // Import your signup page
 import '../auth/forgot_password.dart'; // Import your forgot password page
 
@@ -20,58 +19,97 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () async {
-                await _signInWithEmailAndPassword();
-              },
-              child: Text('Login'),
-            ),
-            SizedBox(height: 10.0),
-            if (_errorMessage.isNotEmpty)
-              Text(
-                _errorMessage,
-                style: TextStyle(color: Colors.red),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20.0),
+              // Customized app logo
+              Image.asset(
+                'assets/logo1.png',
+                width: 200,
+                height: 200,
               ),
-            SizedBox(height: 10.0),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SignupPage()));
-                  },
-                  child: Text("Don't have an account? SignUp"),
+              const SizedBox(height: 20.0),
+              _buildInputField(_emailController, 'Email Id'),
+              _buildInputField(_passwordController, 'Password'),
+              const SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () async {
+                  await _signInWithEmailAndPassword();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent, // Custom button color
+                  elevation: 5, // Shadow depth
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(20.0), // Custom border radius
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 40, vertical: 15), // Custom padding
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ForgotPasswordPage()));
-                  },
-                  child: Text('Forgot Password?'),
+                child: const Text(
+                  'Login',
+                  style: TextStyle(
+                      fontSize: 18, color: Colors.white), // Custom text style
                 ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(height: 10.0),
+              if (_errorMessage.isNotEmpty)
+                Text(
+                  _errorMessage,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              const SizedBox(height: 10.0),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SignupPage()));
+                    },
+                    child: const Text("Don't have an account? SignUp"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ForgotPasswordPage()));
+                    },
+                    child: const Text('Forgot Password?'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInputField(TextEditingController controller, String labelText,
+      {TextInputType keyboardType = TextInputType.text,
+      bool isPassword = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: TextField(
+        controller: controller,
+        obscureText: isPassword,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0), // Custom border radius
+          ),
         ),
       ),
     );
@@ -104,103 +142,3 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 }
-
-
-
-
-
-// import 'package:flutter/material.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import '../auth/signup.dart';
-// import 'package:custodiancare/main.dart'; // Adjust the project name accordingly
-// import '../auth/forgot_password.dart';
-// import '../pages/home.dart';
-
-// class LoginPage extends StatefulWidget {
-//   @override
-//   _LoginPageState createState() => _LoginPageState();
-// }
-
-// class _LoginPageState extends State<LoginPage> {
-//   final FirebaseAuth _auth = FirebaseAuth.instance;
-//   final TextEditingController _emailController = TextEditingController();
-//   final TextEditingController _passwordController = TextEditingController();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Login'),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             TextField(
-//               controller: _emailController,
-//               decoration: InputDecoration(labelText: 'Email'),
-//             ),
-//             TextField(
-//               controller: _passwordController,
-//               decoration: InputDecoration(labelText: 'Password'),
-//               obscureText: true,
-//             ),
-//             SizedBox(height: 20.0),
-//             ElevatedButton(
-//               onPressed: () async {
-//                 // await _signInWithEmailAndPassword();
-//                 try {
-//                   await _auth.signInWithEmailAndPassword(
-//                     email: _emailController.text.trim(),
-//                     password: _passwordController.text.trim(),
-//                   );
-//                   // Navigate to the Home page or another authenticated page
-//                 } catch (e) {
-//                   // Handle login errors
-//                   print('Login failed: $e');
-//                 }
-//               },
-//               child: Text('Login'),
-//             ),
-//             TextButton(
-//               onPressed: () {
-//                 // Navigate to Signup page
-//                 Navigator.push(context,
-//                     MaterialPageRoute(builder: (context) => SignupPage()));
-//               },
-//               child: Text('Don\'t have an account? Sign up'),
-//             ),
-//             TextButton(
-//               onPressed: () {
-//                 // Navigate to Forgot Password page
-//                 Navigator.push(
-//                     context,
-//                     MaterialPageRoute(
-//                         builder: (context) => ForgotPasswordPage()));
-//               },
-//               child: Text('Forgot Password?'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Future<void> _signInWithEmailAndPassword() async {
-//     try {
-//       await _auth.signInWithEmailAndPassword(
-//         email: _emailController.text.trim(),
-//         password: _passwordController.text.trim(),
-//       );
-//       // Navigate to the Home page or another authenticated page
-//       Navigator.pushReplacement(
-//         context,
-//         MaterialPageRoute(builder: (context) => HomePage()),
-//       );
-//     } catch (e) {
-//       // Handle login errors
-//       print('Login failed: $e');
-//     }
-//   }
-// }
