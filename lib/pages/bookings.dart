@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class BookingsPage extends StatelessWidget {
   final CollectionReference bookings =
@@ -18,7 +19,7 @@ class BookingsPage extends StatelessWidget {
           backgroundColor: Colors.blue[100],
         ),
         body: StreamBuilder<QuerySnapshot>(
-          stream: bookings.snapshots(),
+          stream: _getUserBookingsStream(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
@@ -41,6 +42,17 @@ class BookingsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Stream<QuerySnapshot> _getUserBookingsStream() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      // Return an empty stream if no user is logged in
+      return Stream.empty();
+    } else {
+      // Query bookings where the 'user' field matches the current user's email
+      return bookings.where('user', isEqualTo: user.email).snapshots();
+    }
   }
 }
 

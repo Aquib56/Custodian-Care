@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class BookingConfirmationPage extends StatefulWidget {
   final String technicianName;
@@ -18,24 +19,37 @@ class BookingConfirmationPage extends StatefulWidget {
 
 class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
   String? _bookingId;
+  String? _userEmail; // To store the user's email
+
+  // Method to retrieve currently logged-in user's email
+  Future<void> _getUserEmail() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _userEmail = user.email;
+      });
+    }
+  }
 
   Future<void> _generateBookingId() async {
-    // Generate a random booking ID
+    // Generate a booking ID using timestamp and technician name
     final String bookingId =
-        '${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(1000)}';
+        '${widget.technicianName.replaceAll(' ', '_')}-${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(1000)}';
     setState(() {
       _bookingId = bookingId;
     });
   }
 
   Future<void> _writeBookingData() async {
-    if (_bookingId == null) return; // Handle potential missing ID
+    if (_bookingId == null || _userEmail == null)
+      return; // Handle potential missing ID or email
 
     final firestore = FirebaseFirestore.instance;
-    final bookingRef = await firestore.collection('Bookings').add({
+    final bookingRef = firestore.collection('Bookings').doc(_bookingId).set({
       'bookingId': _bookingId,
       'technicianName': widget.technicianName,
       'bookedTime': widget.bookedTime,
+      'user': _userEmail, // Store the user's email
     });
   }
 
@@ -43,6 +57,7 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
   void initState() {
     super.initState();
     _generateBookingId();
+    _getUserEmail(); // Call to retrieve the user's email
   }
 
   @override
@@ -82,6 +97,23 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
                       ],
                     )
                   : CircularProgressIndicator(), // Show progress indicator while generating ID
+              SizedBox(height: 16.0),
+              _userEmail != null
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'User Name:',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        Text(
+                          _userEmail!,
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    )
+                  : Container(), // Container if user email is not yet retrieved
               SizedBox(height: 16.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
