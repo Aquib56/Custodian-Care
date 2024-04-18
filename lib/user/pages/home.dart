@@ -4,6 +4,7 @@ import '../auth/login.dart';
 import '../pages/servicepage.dart';
 import '../pages/location&map.dart';
 import '../pages/category.dart';
+import '../pages/preLogin.dart';
 import '../data/serviceMap.dart';
 
 class HomePage extends StatelessWidget {
@@ -357,14 +358,10 @@ class ServiceTile {
 
 final List<ServiceTile> services = [
   ServiceTile(
-    imagePath: 'assets/painting.png',
-    title: 'Painting',
-    // page: PaintingPage(),
-    page: ServiceDetailPage(
-      serviceData: servicesData,
-      serviceKey: "Painting",
-    ),
-  ),
+      imagePath: 'assets/painting.png',
+      title: 'Painting',
+      // page: PaintingPage(),
+      page: PreLoginPage()),
   ServiceTile(
     imagePath: 'assets/plumber.png',
     title: 'Plumbing',

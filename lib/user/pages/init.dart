@@ -6,7 +6,7 @@ class SplashScreen extends StatelessWidget {
     // Simulate loading delay with Future.delayed
     Future.delayed(Duration(seconds: 3), () {
       // Navigate to your home page or another page after 2 seconds
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/choice');
     });
 
     return Scaffold(

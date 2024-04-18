@@ -1,9 +1,9 @@
-import 'package:custodiancare/auth/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import '../pages/home.dart';
-import '../components/nav.dart';
-import '../pages/init.dart';
+import '../user/components/nav.dart';
+import '../user/pages/init.dart';
+import '../user/pages/preLogin.dart';
+import '../user/auth/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(),
+        '/choice': (context) => PreLoginPage(),
         '/login': (context) => LoginPage(),
         // '/login': (context) => BottomNavBar(),
         // Add more routes as needed

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../pages/navbar.dart';
 import '../pages/home.dart';
 import '../pages/category.dart';
 

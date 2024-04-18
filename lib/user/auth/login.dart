@@ -1,8 +1,8 @@
-import 'package:custodiancare/components/nav.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../auth/signup.dart'; // Import your signup page
 import '../auth/forgot_password.dart'; // Import your forgot password page
+import '../components/nav.dart'; // Import your forgot password page
 
 class LoginPage extends StatefulWidget {
   @override

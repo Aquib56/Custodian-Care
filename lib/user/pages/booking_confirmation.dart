@@ -50,6 +50,7 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
       'technicianName': widget.technicianName,
       'bookedTime': widget.bookedTime,
       'user': _userEmail, // Store the user's email
+      'status': false, // Store the user's email
     });
   }
 
