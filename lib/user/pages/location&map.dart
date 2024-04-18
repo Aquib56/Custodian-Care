@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:permission_handler/permission_handler.dart'; // Import permission_handler package
 
 class MapPage extends StatefulWidget {
   @override
@@ -14,13 +15,19 @@ class _MapPageState extends State<MapPage> {
   late String selectedAddress;
 
   @override
+  void initState() {
+    super.initState();
+    _requestLocationPermission(); // Request location permission when the page initializes
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Map Page'),
+        title: const Text('Select Address'),
         actions: [
           IconButton(
-            icon: Icon(Icons.my_location),
+            icon: const Icon(Icons.my_location),
             onPressed: () {
               _getCurrentLocation();
             },
@@ -46,31 +53,41 @@ class _MapPageState extends State<MapPage> {
             },
           ),
           Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
+            top: 16,
+            left: 16,
+            right: 16,
             child: Container(
-              color: Colors.white,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search location...',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Search location...',
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (value) {
+                        // You can use this callback to update search results as the user types
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.search),
                     onPressed: () {
                       _searchLocation();
                     },
                   ),
-                ),
-                onChanged: (value) {
-                  // You can use this callback to update search results as the user types
-                },
+                ],
               ),
             ),
           ),
           Positioned(
-            bottom: 16,
+            bottom: 105,
             left: 16,
             right: 16,
             child: ElevatedButton(
@@ -78,7 +95,20 @@ class _MapPageState extends State<MapPage> {
                 // Handle saving the selected address and continue
                 _saveSelectedAddress();
               },
-              child: Text('Select this address and continue'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green, // Custom button color
+                elevation: 5, // Shadow depth
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(20.0), // Custom border radius
+                ),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 40, vertical: 15), // Custom padding
+              ),
+              child: const Text(
+                'Select this address and continue',
+                style: TextStyle(fontSize: 18), // Custom text style
+              ),
             ),
           ),
         ],
@@ -126,6 +156,23 @@ class _MapPageState extends State<MapPage> {
       );
       _updateSelectedAddress(
           LatLng(locations.first.latitude, locations.first.longitude));
+    }
+  }
+
+  Future<void> _requestLocationPermission() async {
+    if (await Permission.location.isGranted) {
+      // Location permission is already granted
+      _getCurrentLocation();
+    } else {
+      // Location permission is not granted, request it
+      final permissionStatus = await Permission.location.request();
+      if (permissionStatus == PermissionStatus.granted) {
+        // Permission granted, get the current location
+        _getCurrentLocation();
+      } else {
+        // Permission denied, handle accordingly
+        print('Location permission denied');
+      }
     }
   }
 

@@ -1,7 +1,9 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 import 'login.dart';
 
 class SignupPage extends StatefulWidget {
@@ -18,7 +20,9 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  File? _imageFile; // Declare _imageFile as nullable
   String _errorMessage = '';
+  String _uploadMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,6 @@ class _SignupPageState extends State<SignupPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 20.0),
-              // App logo
               Image.asset(
                 'assets/logo1.png',
                 width: 200,
@@ -51,32 +54,62 @@ class _SignupPageState extends State<SignupPage> {
                   isPassword: true),
               _buildInputField(_confirmPasswordController, 'Confirm Password',
                   isPassword: true),
+              const SizedBox(height: 10.0),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(30, 15, 30, 15),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color:
+                            Colors.grey, // You can change the border color here
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Text(
+                      'Legal Document for Verification',
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      _pickImage();
+                    },
+                    child: const Text('Upload Image'),
+                  ),
+                ],
+              ),
               const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () async {
                   await _signUpWithEmailAndPassword();
                 },
-                // child: const Text('Sign Up'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent, // Custom button color
-                  elevation: 5, // Shadow depth
+                  backgroundColor: Colors.blueAccent,
+                  elevation: 5,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(20.0), // Custom border radius
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 40, vertical: 15), // Custom padding
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 ),
                 child: const Text(
                   'Sign Up',
-                  style: TextStyle(
-                      fontSize: 18, color: Colors.white), // Custom text style
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
               const SizedBox(height: 10.0),
               Text(
                 _errorMessage,
                 style: const TextStyle(color: Colors.red),
+              ),
+              const SizedBox(height: 10.0),
+              Text(
+                _uploadMessage,
+                style: TextStyle(color: Colors.green),
               ),
             ],
           ),
@@ -85,7 +118,6 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  // Function to build custom input field
   Widget _buildInputField(TextEditingController controller, String labelText,
       {TextInputType keyboardType = TextInputType.text,
       bool isPassword = false}) {
@@ -98,16 +130,31 @@ class _SignupPageState extends State<SignupPage> {
         decoration: InputDecoration(
           labelText: labelText,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0), // Custom border radius
+            borderRadius: BorderRadius.circular(10.0),
           ),
         ),
       ),
     );
   }
 
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(
+        source: ImageSource.gallery); // Use pickImage instead of getImage
+
+    if (pickedImage != null) {
+      setState(() {
+        _imageFile = File(pickedImage.path);
+        _uploadMessage = 'Image uploaded successfully';
+      });
+    } else {
+      // User canceled the image picking process
+      // You can handle this scenario as per your requirement
+    }
+  }
+
   Future<void> _signUpWithEmailAndPassword() async {
     try {
-      // Validate password
       if (_passwordController.text.trim() !=
           _confirmPasswordController.text.trim()) {
         setState(() {
@@ -116,28 +163,50 @@ class _SignupPageState extends State<SignupPage> {
         return;
       }
 
-      // Create user with email and password
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // Save additional user details to Firestore
-      await FirebaseFirestore.instance
-          .collection('User')
-          .doc(_emailController.text.trim())
-          .set({
-        'FirstName': _firstNameController.text.trim(),
-        'LastName': _lastNameController.text.trim(),
-        'Email': _emailController.text.trim(),
-        'PhoneNo': _phoneNumberController.text.trim(),
+      final String? userId = userCredential.user?.uid; // Make userId nullable
+
+      String imageUrl = ''; // Initialize imageUrl here
+
+      if (_imageFile != null) {
+        String email =
+            _emailController.text.trim(); // Get the email entered by the user
+        String fileName = '$email.jpg'; // Generate filename using user's email
+
+        Reference ref = FirebaseStorage.instance
+            .ref()
+            .child('user_profile_images')
+            .child(fileName);
+
+        UploadTask uploadTask = ref.putFile(_imageFile!);
+
+        // Update imageUrl if upload is successful
+        try {
+          await uploadTask;
+          imageUrl = await ref.getDownloadURL();
+        } catch (e) {
+          print('Error uploading file: $e');
+          // Handle error
+        }
+      }
+
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'firstName': _firstNameController.text.trim(),
+        'lastName': _lastNameController.text.trim(),
+        'email': _emailController.text.trim(),
+        'phoneNumber': _phoneNumberController.text.trim(),
+        'profileImageUrl': imageUrl,
       });
-      // Clear error message if sign up is successful
+
       setState(() {
         _errorMessage = '';
       });
-      // Show confirmation dialog
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -147,9 +216,8 @@ class _SignupPageState extends State<SignupPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close dialog
+                  Navigator.of(context).pop();
                   Navigator.of(context).pushReplacement(
-                    // Navigate back to login page
                     MaterialPageRoute(builder: (context) => LoginPage()),
                   );
                 },
@@ -170,9 +238,6 @@ class _SignupPageState extends State<SignupPage> {
         });
       }
     } catch (e) {
-      print(
-          '===============================================================================================');
-      print(e);
       setState(() {
         _errorMessage = 'Sign up failed. Please try again later.';
       });

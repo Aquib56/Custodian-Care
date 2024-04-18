@@ -33,11 +33,13 @@ dependencies:
   carousel_slider: ^4.2.1
   intl: ^0.19.0
   material: ^1.0.0+2
+  image_picker: ^1.0.8
 
   # Location and Map
   google_maps_flutter: ^2.5.3
   geolocator: ^11.0.0
   geocoding: ^3.0.0
+  permission_handler: ^11.3.1
 
   # Firebase
   cloud_firestore: ^4.15.8
@@ -58,6 +60,8 @@ dependencies:
   iconsax: ^0.0.8
   google_nav_bar: ^5.0.6
   line_icons: ^2.0.3
+  firebase_storage: 11.6.9
+  
 
 dev_dependencies:
   flutter_test:
