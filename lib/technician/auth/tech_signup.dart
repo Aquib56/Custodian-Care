@@ -23,12 +23,22 @@ class _SignupPageState extends State<TechSignupPage> {
   String _errorMessage = '';
   String _uploadMessage = '';
   List<String> _selectedServices = [];
-  List<String> _services = [
-    'Electric',
-    'Plumbing',
-    'HVAC',
-    // Add more services here as needed
-  ];
+  List<String> _services = [];
+
+  // Function to fetch service categories from Firestore
+  Future<void> _fetchServiceCategories() async {
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('serviceCategories').get();
+    setState(() {
+      _services = snapshot.docs.map((doc) => doc['name'] as String).toList();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchServiceCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +46,7 @@ class _SignupPageState extends State<TechSignupPage> {
       appBar: AppBar(
         title: const Text('Sign Up'),
         centerTitle: true,
+        shadowColor: Colors.blueAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -50,35 +61,54 @@ class _SignupPageState extends State<TechSignupPage> {
                 height: 200,
               ),
               const SizedBox(height: 20.0),
-              _buildInputField(_firstNameController, 'First Name'),
+              _buildInputField(_firstNameController, 'Name of Organization'),
               _buildInputField(_emailController, 'Email',
                   keyboardType: TextInputType.emailAddress),
-              _buildInputField(_phoneNumberController, 'Phone Number',
-                  keyboardType: TextInputType.phone),
               _buildInputField(_passwordController, 'Password',
                   isPassword: true),
               _buildInputField(_confirmPasswordController, 'Confirm Password',
                   isPassword: true),
+              _buildInputField(_phoneNumberController, 'Phone Number',
+                  keyboardType: TextInputType.phone),
               const SizedBox(height: 10.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: _services
-                    .map(
-                      (service) => CheckboxListTile(
-                        title: Text(service),
-                        value: _selectedServices.contains(service),
-                        onChanged: (value) {
-                          setState(() {
-                            if (value != null && value) {
-                              _selectedServices.add(service);
-                            } else {
-                              _selectedServices.remove(service);
-                            }
-                          });
+              ExpansionTile(
+                title: Text('Select Services'),
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: SizedBox(
+                      height: 200,
+                      child: ListView.builder(
+                        itemCount: _services.length,
+                        itemBuilder: (context, index) {
+                          final service = _services[index];
+                          return CheckboxListTile(
+                            title: Text(service),
+                            value: _selectedServices.contains(service),
+                            onChanged: (value) {
+                              setState(() {
+                                if (value != null && value) {
+                                  _selectedServices.add(service);
+                                } else {
+                                  _selectedServices.remove(service);
+                                }
+                              });
+                            },
+                          );
                         },
                       ),
-                    )
-                    .toList(),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
               ),
               Row(
                 children: [
@@ -229,6 +259,7 @@ class _SignupPageState extends State<TechSignupPage> {
         'phoneNumber': _phoneNumberController.text.trim(),
         'profileImageUrl': imageUrl,
         'categories': _selectedServices, // Store selected services
+        'isVerified': false, // Store selected services
       });
 
       setState(() {
