@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../auth/tech_signup.dart'; // Import your signup page
-import '../../user/auth/forgot_password.dart'; // Import your forgot password page
-import '../tech_nav.dart'; // Import your forgot password page
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../auth/tech_signup.dart';
+import '../../user/auth/forgot_password.dart';
+import '../tech_nav.dart';
+import '../auth/not_verified_page.dart'; // Import NotVerifiedPage
 
 class TechLoginPage extends StatefulWidget {
   @override
@@ -29,7 +31,6 @@ class _TechLoginPageState extends State<TechLoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 20.0),
-              // Customized app logo
               Image.asset(
                 'assets/logo1.png',
                 width: 200,
@@ -44,19 +45,17 @@ class _TechLoginPageState extends State<TechLoginPage> {
                   await _signInWithEmailAndPassword();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent, // Custom button color
-                  elevation: 5, // Shadow depth
+                  backgroundColor: Colors.blueAccent,
+                  elevation: 5,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(20.0), // Custom border radius
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 40, vertical: 15), // Custom padding
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 ),
                 child: const Text(
                   'Login',
-                  style: TextStyle(
-                      fontSize: 18, color: Colors.white), // Custom text style
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
               const SizedBox(height: 10.0),
@@ -108,7 +107,7 @@ class _TechLoginPageState extends State<TechLoginPage> {
         decoration: InputDecoration(
           labelText: labelText,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0), // Custom border radius
+            borderRadius: BorderRadius.circular(10.0),
           ),
         ),
       ),
@@ -121,15 +120,39 @@ class _TechLoginPageState extends State<TechLoginPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Clear error message if sign in is successful
-      setState(() {
-        _errorMessage = '';
-      });
-      // Navigate to home page after successful login
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => TechBottomNavBar()),
-      );
+
+      // Check if the email is registered as a technician
+      bool isRegistered =
+          await _checkTechnicianRegistration(_emailController.text.trim());
+
+      if (isRegistered) {
+        // Check if the technician is verified
+        bool isVerified =
+            await _checkTechnicianVerification(_emailController.text.trim());
+
+        if (isVerified) {
+          // Clear error message if sign in is successful
+          setState(() {
+            _errorMessage = '';
+          });
+
+          // Navigate to home page after successful login
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => TechBottomNavBar()),
+          );
+        } else {
+          // Navigate to NotVerifiedPage if not verified
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => NotVerifiedPage()),
+          );
+        }
+      } else {
+        setState(() {
+          _errorMessage = 'You are not registered as a technician.';
+        });
+      }
     } on FirebaseAuthException catch (e) {
       setState(() {
         _errorMessage = 'Email or Password incorrect.';
@@ -139,6 +162,41 @@ class _TechLoginPageState extends State<TechLoginPage> {
       setState(() {
         _errorMessage = 'Error during login. Please try again.';
       });
+    }
+  }
+
+  Future<bool> _checkTechnicianRegistration(String email) async {
+    try {
+      // Query the "Technicians" collection for the provided email
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Technicians')
+          .where('email', isEqualTo: email)
+          .get();
+
+      // If there's at least one document with the provided email, return true
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking technician registration: $e');
+      // Return false if any error occurs during the process
+      return false;
+    }
+  }
+
+  Future<bool> _checkTechnicianVerification(String email) async {
+    try {
+      // Query the "Technicians" collection for the provided email
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Technicians')
+          .where('email', isEqualTo: email)
+          .where('isVerified', isEqualTo: true)
+          .get();
+
+      // If there's at least one verified document with the provided email, return true
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking technician verification: $e');
+      // Return false if any error occurs during the process
+      return false;
     }
   }
 }

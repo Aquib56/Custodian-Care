@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../auth/signup.dart'; // Import your signup page
 import '../auth/forgot_password.dart'; // Import your forgot password page
 import '../components/nav.dart'; // Import your forgot password page
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -121,15 +122,27 @@ class _LoginPageState extends State<LoginPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Clear error message if sign in is successful
-      setState(() {
-        _errorMessage = '';
-      });
-      // Navigate to home page after successful login
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => BottomNavBar()),
-      );
+
+      // Check if the email is registered as a technician
+      bool isRegistered =
+          await _checkTechnicianRegistration(_emailController.text.trim());
+
+      if (isRegistered) {
+        // Clear error message if sign in is successful
+        setState(() {
+          _errorMessage = '';
+        });
+
+        // Navigate to home page after successful login
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => BottomNavBar()),
+        );
+      } else {
+        setState(() {
+          _errorMessage = 'You are not registered as a technician.';
+        });
+      }
     } on FirebaseAuthException catch (e) {
       setState(() {
         _errorMessage = 'Email or Password incorrect.';
@@ -139,6 +152,23 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _errorMessage = 'Error during login. Please try again.';
       });
+    }
+  }
+
+  Future<bool> _checkTechnicianRegistration(String email) async {
+    try {
+      // Query the "Technicians" collection for the provided email
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Technicians')
+          .where('email', isEqualTo: email)
+          .get();
+
+      // If there's at least one document with the provided email, return true
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking technician registration: $e');
+      // Return false if any error occurs during the process
+      return false;
     }
   }
 }

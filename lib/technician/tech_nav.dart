@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../user/pages/home.dart';
 import '../user/pages/category.dart';
