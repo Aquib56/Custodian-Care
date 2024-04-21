@@ -160,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
       // Query the "Technicians" collection for the provided email
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('User')
-          .where('Email', isEqualTo: email)
+          .where('email', isEqualTo: email)
           .get();
 
       // If there's at least one document with the provided email, return true
