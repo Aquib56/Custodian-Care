@@ -18,6 +18,8 @@ class _SignupPageState extends State<TechSignupPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _pincodeController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   File? _imageFile; // Declare _imageFile as nullable
   String _errorMessage = '';
@@ -68,6 +70,9 @@ class _SignupPageState extends State<TechSignupPage> {
                   isPassword: true),
               _buildInputField(_confirmPasswordController, 'Confirm Password',
                   isPassword: true),
+              _buildInputField(_addressController, 'Address'),
+              _buildInputField(_pincodeController, 'Pincode',
+                  keyboardType: TextInputType.number),
               _buildInputField(_phoneNumberController, 'Phone Number',
                   keyboardType: TextInputType.phone),
               const SizedBox(height: 10.0),
@@ -259,7 +264,10 @@ class _SignupPageState extends State<TechSignupPage> {
         'phoneNumber': _phoneNumberController.text.trim(),
         'profileImageUrl': imageUrl,
         'categories': _selectedServices, // Store selected services
-        'isVerified': false, // Store selected services
+        'isVerified': false,
+        'totalRating': 10,
+        'location': _addressController.text.trim(),
+        'pincode': _pincodeController.text.trim(), // Store selected services
       });
 
       setState(() {

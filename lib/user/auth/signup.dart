@@ -20,6 +20,8 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _pincodeController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   File? _imageFile; // Declare _imageFile as nullable
   String _errorMessage = '';
   String _uploadMessage = '';
@@ -46,6 +48,9 @@ class _SignupPageState extends State<SignupPage> {
               const SizedBox(height: 20.0),
               _buildInputField(_firstNameController, 'First Name'),
               _buildInputField(_lastNameController, 'Last Name'),
+              _buildInputField(_addressController, 'Address'),
+              _buildInputField(_pincodeController, 'Pincode',
+                  keyboardType: TextInputType.number),
               _buildInputField(_emailController, 'Email',
                   keyboardType: TextInputType.emailAddress),
               _buildInputField(_phoneNumberController, 'Phone Number',
@@ -54,35 +59,6 @@ class _SignupPageState extends State<SignupPage> {
                   isPassword: true),
               _buildInputField(_confirmPasswordController, 'Confirm Password',
                   isPassword: true),
-              const SizedBox(height: 10.0),
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(30, 15, 30, 15),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color:
-                            Colors.grey, // You can change the border color here
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Text(
-                      'Legal Document for Verification',
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      _pickImage();
-                    },
-                    child: const Text('Upload Image'),
-                  ),
-                ],
-              ),
               const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () async {
@@ -195,12 +171,16 @@ class _SignupPageState extends State<SignupPage> {
         }
       }
 
-      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+      await FirebaseFirestore.instance
+          .collection('User')
+          .doc(_emailController.text.trim())
+          .set({
         'firstName': _firstNameController.text.trim(),
         'lastName': _lastNameController.text.trim(),
         'email': _emailController.text.trim(),
         'phoneNumber': _phoneNumberController.text.trim(),
-        'profileImageUrl': imageUrl,
+        'location': _addressController.text.trim(),
+        'pincode': _pincodeController.text.trim(),
       });
 
       setState(() {

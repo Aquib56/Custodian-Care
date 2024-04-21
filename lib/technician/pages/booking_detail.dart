@@ -72,7 +72,7 @@ class TechBookingDetailPage extends StatelessWidget {
     // Query bookings where technicianEmail matches booking.technicianEmail
     firestore
         .collection('Bookings')
-        .where('technicianEmail', isEqualTo: booking.technicianEmail)
+        .where('bookingId', isEqualTo: booking.bookingId)
         .get()
         .then((querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {

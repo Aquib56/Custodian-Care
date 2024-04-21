@@ -10,14 +10,14 @@ final Map<String, Map<String, dynamic>> servicesData = {
     "photos": ["assets/cleaningService.jpeg", "assets/cleaningService1.jpeg"]
   },
   "Painting": {
-    "imagePath": "assets/PaintingService.jpeg",
+    "imagePath": "assets/cleaningService.jpeg",
     "title": "Plumber",
-    "banner": "assets/PaintingService.jpeg",
+    "banner": "assets/cleaningService.jpeg",
     "price": 100.0,
     "ratings": 4.5,
     "description":
         "Customers can easily book a painting service through the app by specifying their requirements such as the type of painting needed, the size of the area to be painted, preferred colors, and any additional preferences they may have. Once booked, experienced painters are dispatched to the customer's location at the scheduled time.",
-    "photos": ["assets/assets/PaintingService", "assets/assets/PaintingService"]
+    "photos": ["assets/cleaningService.jpeg", "assets/cleaningService1.jpeg"]
   },
   "Electrician": {
     // Data assumed for Electrician (replace with actual data if available)
