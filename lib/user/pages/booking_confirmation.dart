@@ -6,11 +6,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class BookingConfirmationPage extends StatefulWidget {
   final String technicianName;
-  final DateTime bookedTime; // Pass bookedTime in the constructor
+  final String technicianEmail;
+  final DateTime bookedTime;
 
-  const BookingConfirmationPage(
-      {Key? key, required this.technicianName, required this.bookedTime})
-      : super(key: key);
+  const BookingConfirmationPage({
+    Key? key,
+    required this.technicianName,
+    required this.technicianEmail,
+    required this.bookedTime,
+  }) : super(key: key);
 
   @override
   _BookingConfirmationPageState createState() =>
@@ -19,9 +23,8 @@ class BookingConfirmationPage extends StatefulWidget {
 
 class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
   String? _bookingId;
-  String? _userEmail; // To store the user's email
+  String? _userEmail;
 
-  // Method to retrieve currently logged-in user's email
   Future<void> _getUserEmail() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -32,7 +35,6 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
   }
 
   Future<void> _generateBookingId() async {
-    // Generate a booking ID using timestamp and technician name
     final String bookingId =
         '${widget.technicianName.replaceAll(' ', '_')}-${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(1000)}';
     setState(() {
@@ -41,16 +43,16 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
   }
 
   Future<void> _writeBookingData() async {
-    if (_bookingId == null || _userEmail == null)
-      return; // Handle potential missing ID or email
+    if (_bookingId == null || _userEmail == null) return;
 
     final firestore = FirebaseFirestore.instance;
     final bookingRef = firestore.collection('Bookings').doc(_bookingId).set({
       'bookingId': _bookingId,
       'technicianName': widget.technicianName,
+      'technicianEmail': widget.technicianEmail,
       'bookedTime': widget.bookedTime,
-      'user': _userEmail, // Store the user's email
-      'status': false, // Store the user's email
+      'user': _userEmail,
+      'status': false,
     });
   }
 
@@ -58,7 +60,7 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
   void initState() {
     super.initState();
     _generateBookingId();
-    _getUserEmail(); // Call to retrieve the user's email
+    _getUserEmail();
   }
 
   @override
@@ -97,7 +99,7 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
                         ),
                       ],
                     )
-                  : CircularProgressIndicator(), // Show progress indicator while generating ID
+                  : CircularProgressIndicator(),
               SizedBox(height: 16.0),
               _userEmail != null
                   ? Row(
@@ -114,7 +116,7 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
                         ),
                       ],
                     )
-                  : Container(), // Container if user email is not yet retrieved
+                  : Container(),
               SizedBox(height: 16.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,7 +141,6 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
                     style: TextStyle(fontSize: 16.0),
                   ),
                   Text(
-                    // Use custom formatting or library if desired
                     '${widget.bookedTime.year}-${widget.bookedTime.month.toString().padLeft(2, '0')}-${widget.bookedTime.day.toString().padLeft(2, '0')} ${widget.bookedTime.hour.toString().padLeft(2, '0')}:${widget.bookedTime.minute.toString().padLeft(2, '0')}',
                     style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -149,8 +150,7 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
-                  await _writeBookingData(); // Write booking data to Firestore
-                  // Optionally, navigate back to a previous page
+                  await _writeBookingData();
                   Navigator.pop(context);
                 },
                 child: Text('Close'),
