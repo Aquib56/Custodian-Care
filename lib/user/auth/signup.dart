@@ -180,7 +180,9 @@ class _SignupPageState extends State<SignupPage> {
         'email': _emailController.text.trim(),
         'phoneNumber': _phoneNumberController.text.trim(),
         'location': _addressController.text.trim(),
-        'pincode': _pincodeController.text.trim(),
+        'pincode': int.parse(
+          _pincodeController.text.trim(),
+        )
       });
 
       setState(() {

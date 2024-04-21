@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../user/pages/home.dart';
 import '../user/pages/category.dart';
-import '../user/pages/profile.dart';
 import 'pages/technician_bookings.dart';
+import 'pages/tech_profile.dart';
 
 class TechBottomNavBar extends StatefulWidget {
   @override
@@ -14,8 +14,9 @@ class _TechBottomNavBarState extends State<TechBottomNavBar> {
 
   final List<Widget> _pages = [
     HomePage(),
-    CategoryPage(),
     TechBookingsPage(),
+    ProfilePage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {

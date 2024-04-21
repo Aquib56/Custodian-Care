@@ -267,7 +267,9 @@ class _SignupPageState extends State<TechSignupPage> {
         'isVerified': false,
         'totalRating': 10,
         'location': _addressController.text.trim(),
-        'pincode': _pincodeController.text.trim(), // Store selected services
+        'pincode': int.parse(
+            _pincodeController.text.trim()), // Store selected services
+        'rating': 7, // Default rating value
       });
 
       setState(() {
