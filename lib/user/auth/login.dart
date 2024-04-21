@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       } else {
         setState(() {
-          _errorMessage = 'You are not registered as a technician.';
+          _errorMessage = 'You are not registered as .';
         });
       }
     } on FirebaseAuthException catch (e) {
@@ -159,8 +159,8 @@ class _LoginPageState extends State<LoginPage> {
     try {
       // Query the "Technicians" collection for the provided email
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('Technicians')
-          .where('email', isEqualTo: email)
+          .collection('User')
+          .where('Email', isEqualTo: email)
           .get();
 
       // If there's at least one document with the provided email, return true

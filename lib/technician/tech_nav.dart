@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../user/pages/home.dart';
 import '../user/pages/category.dart';
 import '../user/pages/profile.dart';
-import '../user/pages/bookings.dart';
+import 'pages/technician_bookings.dart';
 
 class TechBottomNavBar extends StatefulWidget {
   @override
@@ -15,11 +15,10 @@ class _TechBottomNavBarState extends State<TechBottomNavBar> {
   final List<Widget> _pages = [
     HomePage(),
     CategoryPage(),
-    BookingsPage(),
+    TechBookingsPage(),
   ];
 
   void _onItemTapped(int index) {
-    print("================================fadfadfaf===========");
     setState(() {
       _selectedIndex = index;
     });
@@ -43,11 +42,11 @@ class _TechBottomNavBarState extends State<TechBottomNavBar> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt_rounded),
-            label: 'BookingsNigga',
+            label: 'Bookings',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'ProfileNigga',
+            label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,

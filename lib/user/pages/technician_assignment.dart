@@ -22,6 +22,7 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
   }
 
   Future<void> _fetchTechnicians() async {
+    print("burh=============================");
     final firestore = FirebaseFirestore.instance;
 
     // Query technicians based on selected categories
@@ -29,9 +30,11 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
           'categories',
           arrayContainsAny: widget.selectedCategories,
         );
-
     // Get all matching technicians
     final snapshot = await query.get();
+
+    print(
+        'Number of documents found: ${snapshot.docs.length}'); // Print # of documents
 
     // Find technician with highest rating
     _highestRatedTechnician = snapshot.docs
@@ -40,6 +43,8 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
             technician1.rating > technician2.rating
                 ? technician1
                 : technician2);
+    print("Helllo===============================fafa=f");
+    print(_highestRatedTechnician);
 
     setState(() {}); // Update UI with fetched data
   }
@@ -69,13 +74,16 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
                     onPressed: () => _initiateBooking(context),
                     child: Text("Confirm"),
                   ),
-                  // Add more details about the technician here (optional)
+                  // Optionally display additional details from Technician class
+                  Text(
+                    'Email: ${_highestRatedTechnician!.email}',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
                 ],
               ),
             )
           : Center(
-              child:
-                  CircularProgressIndicator(), // Show progress indicator while fetching
+              child: CircularProgressIndicator(),
             ),
     );
   }
@@ -85,14 +93,17 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
     // final String bookingId = '${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(1000)}';
 
     final technicianName = _highestRatedTechnician!.name;
+    final technicianEmail =
+        _highestRatedTechnician!.email; // Access email from Technician
     final DateTime bookedTime = DateTime.now();
 
-    // Navigate to BookingConfirmationPage with technician name and booked time
+    // Navigate to BookingConfirmationPage with technician details and booked time
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => BookingConfirmationPage(
           technicianName: technicianName,
+          technicianEmail: technicianEmail,
           bookedTime: bookedTime,
         ),
       ),
@@ -100,21 +111,24 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
   }
 }
 
-// Define your Technician class with array of categories
+// Define your Technician class with additional fields
 class Technician {
   final String name;
   final double rating;
   final List<String> categories;
+  final String email;
 
   Technician({
     required this.name,
     required this.rating,
     required this.categories,
+    required this.email,
   });
 
   factory Technician.fromFirestore(Map<String, dynamic> data) => Technician(
         name: data['name'] as String,
         rating: (data['rating'] as num).toDouble(),
         categories: (data['categories'] as List<dynamic>).cast<String>(),
+        email: data['email'] as String, // Access email from Firestore data
       );
 }
