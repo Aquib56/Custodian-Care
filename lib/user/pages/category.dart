@@ -53,18 +53,19 @@ class CategoryPage extends StatelessWidget {
 
 class Category {
   final String name;
-  final IconData icon;
+  final String imageURL;
   final String description;
 
-  const Category(
-      {required this.name, required this.icon, required this.description});
+  const Category({
+    required this.name,
+    required this.imageURL,
+    required this.description,
+  });
 
   factory Category.fromSnapshot(DocumentSnapshot snapshot) {
     return Category(
       name: snapshot['name'] as String,
-      icon: IconData(snapshot['icon'] as int,
-          fontFamily:
-              'MaterialIcons'), // Assuming icon is stored as an integer code
+      imageURL: snapshot['imageURL'] as String,
       description: snapshot['description'] as String,
     );
   }
@@ -87,7 +88,7 @@ class CategoryCard extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => ServiceDetailPage(
                 serviceData: servicesData,
-                serviceKey: "Painting",
+                serviceKey: category.name,
               ),
             ),
           );
@@ -96,7 +97,11 @@ class CategoryCard extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           child: Row(
             children: [
-              Icon(category.icon, size: 48.0),
+              Image.network(
+                category.imageURL,
+                width: 48.0,
+                height: 48.0,
+              ),
               SizedBox(width: 16.0),
               Expanded(
                 child: Column(

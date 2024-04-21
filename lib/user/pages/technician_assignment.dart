@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../pages/booking_confirmation.dart';
 
 class TechnicianDetailPage extends StatefulWidget {
@@ -14,15 +15,40 @@ class TechnicianDetailPage extends StatefulWidget {
 
 class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
   Technician? _highestRatedTechnician;
+  late String _userEmail;
+  late int _userPincode;
 
   @override
   void initState() {
     super.initState();
-    _fetchTechnicians();
+    _getUserData();
+  }
+
+  Future<void> _getUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _userEmail = user.email!;
+      });
+
+      final userQuery = await FirebaseFirestore.instance
+          .collection('User')
+          .where('email', isEqualTo: _userEmail)
+          .limit(1)
+          .get();
+
+      if (userQuery.docs.isNotEmpty) {
+        final userDoc = userQuery.docs.first;
+        setState(() {
+          _userPincode = userDoc['pincode'] as int;
+        });
+
+        _fetchTechnicians();
+      }
+    }
   }
 
   Future<void> _fetchTechnicians() async {
-    print("burh=============================");
     final firestore = FirebaseFirestore.instance;
 
     // Query technicians based on selected categories
@@ -36,14 +62,26 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
     print(
         'Number of documents found: ${snapshot.docs.length}'); // Print # of documents
 
-    // Find technician with highest rating
-    _highestRatedTechnician = snapshot.docs
-        .map((doc) => Technician.fromFirestore(doc.data()))
-        .reduce((technician1, technician2) =>
-            technician1.rating > technician2.rating
-                ? technician1
-                : technician2);
-    print("Helllo===============================fafa=f");
+    // Find technician with closest pincode and highest rating
+    double minPincodeDifference = double.infinity;
+    Technician? closestTechnician;
+
+    snapshot.docs.forEach((doc) {
+      final technician = Technician.fromFirestore(doc.data());
+
+      final technicianPincode = doc['pincode'] as int;
+      final pincodeDifference =
+          (_userPincode - technicianPincode).abs().toDouble();
+
+      if (pincodeDifference < minPincodeDifference ||
+          (pincodeDifference == minPincodeDifference &&
+              technician.rating > closestTechnician!.rating)) {
+        minPincodeDifference = pincodeDifference;
+        closestTechnician = technician;
+      }
+    });
+
+    _highestRatedTechnician = closestTechnician;
     print(_highestRatedTechnician);
 
     setState(() {}); // Update UI with fetched data
@@ -89,15 +127,10 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
   }
 
   Future<void> _initiateBooking(BuildContext context) async {
-    // Generate a random booking ID (implement in BookingConfirmationPage)
-    // final String bookingId = '${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(1000)}';
-
     final technicianName = _highestRatedTechnician!.name;
-    final technicianEmail =
-        _highestRatedTechnician!.email; // Access email from Technician
+    final technicianEmail = _highestRatedTechnician!.email;
     final DateTime bookedTime = DateTime.now();
 
-    // Navigate to BookingConfirmationPage with technician details and booked time
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -117,18 +150,21 @@ class Technician {
   final double rating;
   final List<String> categories;
   final String email;
+  final int pincode;
 
   Technician({
     required this.name,
     required this.rating,
     required this.categories,
     required this.email,
+    required this.pincode,
   });
 
   factory Technician.fromFirestore(Map<String, dynamic> data) => Technician(
         name: data['name'] as String,
         rating: (data['rating'] as num).toDouble(),
         categories: (data['categories'] as List<dynamic>).cast<String>(),
-        email: data['email'] as String, // Access email from Firestore data
+        email: data['email'] as String,
+        pincode: data['pincode'] as int, // Ensure pincode is treated as int
       );
 }

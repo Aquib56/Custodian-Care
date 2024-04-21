@@ -358,10 +358,14 @@ class ServiceTile {
 
 final List<ServiceTile> services = [
   ServiceTile(
-      imagePath: 'assets/painting.png',
-      title: 'Painting',
-      // page: PaintingPage(),
-      page: PreLoginPage()),
+    imagePath: 'assets/painting.png',
+    title: 'Painting',
+    // page: PaintingPage(),
+    page: ServiceDetailPage(
+      serviceData: servicesData,
+      serviceKey: "Painting",
+    ),
+  ),
   ServiceTile(
     imagePath: 'assets/plumber.png',
     title: 'Plumbing',
