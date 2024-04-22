@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../pages/home.dart';
-import '../pages/category.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../pages/edit_profilepage.dart'; // Import LoginPage
+import '../pages/preLogin.dart'; // Import EditProfilePage
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -8,91 +10,152 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int _currentIndex = 4;
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-      if (index == 2) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ProfilePage()),
-        );
-      } else if (index == 0) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
-      } else if (index == 1) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => CategoryPage()),
-        );
-      } else if (index == 4) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ProfilePage()),
-        );
+  String? _userName;
+  String? _userEmail;
+  String? _userLocation;
+  String? _userPhoneNumber;
+  int? _userPincode;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserData();
+  }
+
+  Future<void> _getUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _userEmail = user.email;
+      });
+
+      final userQuery = await FirebaseFirestore.instance
+          .collection('User')
+          .where('email', isEqualTo: _userEmail)
+          .limit(1)
+          .get();
+
+      if (userQuery.docs.isNotEmpty) {
+        final userData = userQuery.docs.first.data() as Map<String, dynamic>;
+        setState(() {
+          _userName = '${userData['firstName']} ${userData['lastName']}';
+          _userLocation = userData['location'];
+          _userPhoneNumber = userData['phoneNumber'];
+          _userPincode = userData['pincode'];
+        });
       }
-    });
+    }
+  }
+
+  Future<void> _logout() async {
+    bool confirmLogout = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Logout'),
+        content: Text('Are you sure you want to log out?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .pop(false); // Return false when Cancel is pressed
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .pop(true); // Return true when Yes is pressed
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmLogout == true) {
+      await FirebaseAuth.instance.signOut();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => PreLoginPage()),
+        (Route<dynamic> route) => false,
+      );
+    }
+  }
+
+  void _editProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EditProfilePage()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome'),
+        title: Text(_userName != null ? 'Welcome, $_userName' : 'Welcome'),
         actions: [
           IconButton(
-            icon: Icon(Icons.account_circle),
-            onPressed: () {
-              // Handle account icon action
-            },
+            icon: Icon(Icons.edit),
+            onPressed: _editProfile,
           ),
         ],
       ),
       body: ListView(
         children: <Widget>[
-          ListTile(
-            leading: Icon(Icons.login),
-            title: Text('Sign in'),
-            subtitle: Text('Access your account and personalized features.'),
-            onTap: () {
-              // Handle sign in action
-            },
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.email, color: Colors.blueAccent),
+              title: Text('Email', style: TextStyle(fontSize: 18)),
+              subtitle:
+                  Text(_userEmail ?? 'N/A', style: TextStyle(fontSize: 16)),
+            ),
           ),
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text('Wishlist'),
-            subtitle: Text('Create and manage your desired items.'),
-            onTap: () {
-              // Handle wishlist action
-            },
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.person, color: Colors.blueAccent),
+              title: Text('Name', style: TextStyle(fontSize: 18)),
+              subtitle:
+                  Text(_userName ?? 'N/A', style: TextStyle(fontSize: 16)),
+            ),
           ),
-          ListTile(
-            leading: Icon(Icons.location_on),
-            title: Text('Address'),
-            subtitle: Text('Manage your shipping and billing information.'),
-            onTap: () {
-              // Handle address action
-            },
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.location_on, color: Colors.blueAccent),
+              title: Text('Location', style: TextStyle(fontSize: 18)),
+              subtitle:
+                  Text(_userLocation ?? 'N/A', style: TextStyle(fontSize: 16)),
+            ),
           ),
-          ListTile(
-            leading: Icon(Icons.list),
-            title: Text('Orders'),
-            subtitle: Text('Find order updates, returns, and cancellations.'),
-            onTap: () {
-              // Handle orders action
-            },
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.phone, color: Colors.blueAccent),
+              title: Text('Phone Number', style: TextStyle(fontSize: 18)),
+              subtitle: Text(_userPhoneNumber ?? 'N/A',
+                  style: TextStyle(fontSize: 16)),
+            ),
           ),
-          ListTile(
-            leading: Icon(Icons.account_balance_wallet),
-            title: Text('Wallet'),
-            subtitle: Text('Manage your wallet and transactions.'),
-            onTap: () {
-              // Handle wallet action
-            },
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.pin_drop, color: Colors.blueAccent),
+              title: Text('Pincode', style: TextStyle(fontSize: 18)),
+              subtitle: Text(
+                  _userPincode != null ? _userPincode.toString() : 'N/A',
+                  style: TextStyle(fontSize: 16)),
+            ),
           ),
         ],
+      ),
+      bottomNavigationBar: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(16.0),
+        child: ElevatedButton(
+          onPressed: _logout,
+          child: Text('Logout',
+              style: TextStyle(color: Colors.white, fontSize: 18.0)),
+          style: ElevatedButton.styleFrom(
+            primary: Colors.blueAccent, // Set button color to blue
+          ),
+        ),
       ),
     );
   }
