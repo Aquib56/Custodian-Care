@@ -51,11 +51,15 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
   Future<void> _fetchTechnicians() async {
     final firestore = FirebaseFirestore.instance;
 
-    // Query technicians based on selected categories
-    final query = firestore.collection('Technicians').where(
+    // Query technicians based on selected categories and isVerified field
+    final query = firestore
+        .collection('Technicians')
+        .where(
           'categories',
           arrayContainsAny: widget.selectedCategories,
-        );
+        )
+        .where('isVerified', isEqualTo: true); // Add condition for isVerified
+
     // Get all matching technicians
     final snapshot = await query.get();
 

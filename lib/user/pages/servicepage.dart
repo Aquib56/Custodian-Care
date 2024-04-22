@@ -1,145 +1,119 @@
 import 'package:flutter/material.dart';
-// import '.././booking/booking_details.dart'; // Remove unused import
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../pages/home.dart';
 import '../components/nav.dart';
 import 'technician_assignment.dart';
 
 class ServiceDetailPage extends StatelessWidget {
-  final Map<String, dynamic> serviceData;
   final String serviceKey;
 
   const ServiceDetailPage({
-    required this.serviceData,
     required this.serviceKey,
   });
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> service = serviceData[serviceKey];
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance
+          .collection('serviceCategories')
+          .doc(serviceKey)
+          .get(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Loading...'),
+            ),
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Service Not Found'),
+            ),
+            body: Center(
+              child: Text('The requested service is not available.'),
+            ),
+          );
+        }
+        final serviceData = snapshot.data!.data() as Map<String, dynamic>;
 
-    if (service == null) {
-      // Handle the case where the service key is not found in the map
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Service Not Found'),
-        ),
-        body: const Center(
-          child: Text('The requested service is not available.'),
-        ),
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(service['title']),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Image.asset(service['banner']),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    service['title'],
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Text(
-                  //   'Category: ${service['category']}', // Commented out, might not be needed
-                  //   style: const TextStyle(fontSize: 18),
-                  // ),
-                  // const SizedBox(height: 8),
-                  Text(
-                    'Price: \$${service['price'].toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(serviceData['name']),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Image.network(serviceData['banner']),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Ratings: ',
+                      Text(
+                        'Price: \$${serviceData['price'].toStringAsFixed(2)}',
                         style: TextStyle(fontSize: 18),
                       ),
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Text(
+                            'Ratings: ',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          Text(
+                            serviceData['rating'].toString(),
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ],
                       ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'About:',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
                       Text(
-                        service['ratings'].toString(),
-                        style: const TextStyle(fontSize: 18),
+                        serviceData['longdescription'],
+                        style: TextStyle(fontSize: 16),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'About:',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    service['description'],
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const Text(
-                    'Photos:',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: (service['photos'] as List<String>)
-                          .map((photo) => GestureDetector(
-                                onTap: () {
-                                  // Implement photo enlargement
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.asset(
-                                    photo,
-                                    width: 200,
-                                    height: 200,
-                                    fit: BoxFit.cover,
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TechnicianDetailPage(
+                                    selectedCategories: [serviceKey],
                                   ),
                                 ),
-                              ))
-                          .toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TechnicianDetailPage(
-                                selectedCategories: [
-                                  serviceKey
-                                ], // Assuming TechnicianDetailPage uses categories
-                              ),
-                            ),
-                          );
-                        },
-                        child: const Text('Book Now'),
+                              );
+                            },
+                            child: const Text('Book Now'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -87,7 +87,6 @@ class CategoryCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ServiceDetailPage(
-                serviceData: servicesData,
                 serviceKey: category.name,
               ),
             ),
