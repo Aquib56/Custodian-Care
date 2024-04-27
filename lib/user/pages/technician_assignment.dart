@@ -112,14 +112,29 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
                     'Rating: ${_highestRatedTechnician!.rating.toStringAsFixed(1)}',
                     style: TextStyle(fontSize: 16.0),
                   ),
-                  ElevatedButton(
-                    onPressed: () => _initiateBooking(context),
-                    child: Text("Confirm"),
-                  ),
-                  // Optionally display additional details from Technician class
                   Text(
                     'Email: ${_highestRatedTechnician!.email}',
                     style: TextStyle(fontSize: 16.0),
+                  ),
+                  Text(
+                    'Location: ${_highestRatedTechnician!.location}',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  Text(
+                    'Phone Number: ${_highestRatedTechnician!.phoneNumber}',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  Text(
+                    'Pincode: ${_highestRatedTechnician!.pincode}',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  Text(
+                    'Selected Categories: ${widget.selectedCategories.join(', ')}',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _initiateBooking(context),
+                    child: Text("Confirm"),
                   ),
                 ],
               ),
@@ -142,6 +157,7 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
           technicianName: technicianName,
           technicianEmail: technicianEmail,
           bookedTime: bookedTime,
+          selectedCategories: widget.selectedCategories,
         ),
       ),
     );
@@ -152,23 +168,26 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
 class Technician {
   final String name;
   final double rating;
-  final List<String> categories;
   final String email;
   final int pincode;
+  final String location;
+  final String phoneNumber;
 
   Technician({
     required this.name,
     required this.rating,
-    required this.categories,
     required this.email,
     required this.pincode,
+    required this.location,
+    required this.phoneNumber,
   });
 
   factory Technician.fromFirestore(Map<String, dynamic> data) => Technician(
         name: data['name'] as String,
         rating: (data['rating'] as num).toDouble(),
-        categories: (data['categories'] as List<dynamic>).cast<String>(),
         email: data['email'] as String,
         pincode: data['pincode'] as int, // Ensure pincode is treated as int
+        location: data['location'] as String,
+        phoneNumber: data['phoneNumber'] as String,
       );
 }

@@ -8,12 +8,14 @@ class BookingConfirmationPage extends StatefulWidget {
   final String technicianName;
   final String technicianEmail;
   final DateTime bookedTime;
+  final List selectedCategories;
 
   const BookingConfirmationPage({
     Key? key,
     required this.technicianName,
     required this.technicianEmail,
     required this.bookedTime,
+    required this.selectedCategories,
   }) : super(key: key);
 
   @override
@@ -46,14 +48,46 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
     if (_bookingId == null || _userEmail == null) return;
 
     final firestore = FirebaseFirestore.instance;
-    final bookingRef = firestore.collection('Bookings').doc(_bookingId).set({
-      'bookingId': _bookingId,
-      'technicianName': widget.technicianName,
-      'technicianEmail': widget.technicianEmail,
-      'bookedTime': widget.bookedTime,
-      'user': _userEmail,
-      'status': false,
-    });
+
+    // Query Firestore to check existing bookings
+    final querySnapshot = await firestore
+        .collection('Bookings')
+        .where('technicianEmail', isEqualTo: widget.technicianEmail)
+        .where('user', isEqualTo: _userEmail)
+        .where('status', isEqualTo: false)
+        .where('servicetype', isEqualTo: widget.selectedCategories[0])
+        .get();
+
+    // If any existing bookings match the conditions, display a message
+    if (querySnapshot.docs.isNotEmpty) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Booking already in process'),
+            content: Text('This booking is already in process.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      });
+    } else {
+      // If no matching booking found, proceed with writing the new booking
+      final bookingRef =
+          await firestore.collection('Bookings').doc(_bookingId).set({
+        'bookingId': _bookingId,
+        'technicianName': widget.technicianName,
+        'technicianEmail': widget.technicianEmail,
+        'bookedTime': widget.bookedTime,
+        'user': _userEmail,
+        'status': false,
+        "servicetype": widget.selectedCategories[0]
+      });
+    }
   }
 
   @override
@@ -128,6 +162,23 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
                     ),
                     Text(
                       widget.technicianName,
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Service Type:',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    Text(
+                      widget.selectedCategories[0],
                       style: TextStyle(
                           fontSize: 16.0, fontWeight: FontWeight.bold),
                     ),
