@@ -135,11 +135,35 @@ class _SignupPageState extends State<TechSignupPage> {
                     ),
                   ),
                   SizedBox(width: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      _pickImage();
-                    },
-                    child: const Text('Upload Image'),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(30, 15, 30, 15),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors
+                                  .grey, // You can change the border color here
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Text(
+                            'Legal Document for Verification',
+                            style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: () async {
+                            _pickImage();
+                          },
+                          child: const Text('Upload Image'),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

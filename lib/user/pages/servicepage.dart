@@ -42,77 +42,99 @@ class ServiceDetailPage extends StatelessWidget {
         final serviceData = snapshot.data!.data() as Map<String, dynamic>;
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text(serviceData['name']),
-          ),
-          body: SingleChildScrollView(
-            child: Column(
+            appBar: AppBar(
+              title: Text(serviceData['name']),
+            ),
+            body: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Image.network(serviceData['banner']),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Price: \$${serviceData['price'].toStringAsFixed(2)}',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Text(
-                            'Ratings: ',
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                          Text(
-                            serviceData['rating'].toString(),
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'About:',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        serviceData['longdescription'],
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TechnicianDetailPage(
-                                    selectedCategories: [serviceKey],
-                                  ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.network(serviceData['banner']),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                serviceKey.toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              );
-                            },
-                            child: const Text('Book Now'),
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Price: \$${serviceData['price']}',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Ratings: ',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  Text(
+                                    serviceData['rating'].toString(),
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'About:',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                serviceData['longdescription'],
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              SizedBox(height: 16),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
-        );
+            bottomNavigationBar: Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(16),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TechnicianDetailPage(
+                        selectedCategories: [serviceKey],
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  "Book Now",
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                ),
+              ),
+            ));
       },
     );
   }

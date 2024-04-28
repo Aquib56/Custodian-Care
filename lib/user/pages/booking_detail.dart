@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../pages/bookings.dart'; // Import the Booking class
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore for database operations
+import '../pages/bookings.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../pages/complaint.dart';
 
 class BookingDetailPage extends StatelessWidget {
   final Booking booking;
@@ -11,75 +12,141 @@ class BookingDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Booking Details'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            elevation: 5.0,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Technician Name: ${booking.technicianName}',
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    'Booking ID: ${booking.bookingId}',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    'Booked Time: ${booking.bookedTime.toString()}',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    'Status: ${booking.status ? 'Completed' : 'Pending'}',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  SizedBox(height: 16.0),
-                  if (!booking.status)
-                    Text(
-                      'The service provider will get to you soon',
-                      style: TextStyle(fontSize: 16.0),
-                    )
-                  else
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance
+          .collection('Bookings')
+          .doc(booking.bookingId)
+          .get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return Center(child: Text('Booking not found'));
+        }
+
+        Map<String, dynamic> bookingData =
+            snapshot.data!.data() as Map<String, dynamic>;
+        Timestamp bookedTime = bookingData['bookedTime'] as Timestamp;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Booking Details'),
+          ),
+          body: Container(
+            color: Colors.grey[100], // Light background color
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Card(
+                  elevation: 5.0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            int? rating = await _showRatingDialog(context);
-                            if (rating != null) {
-                              await _updateTechnicianRating(
-                                  booking.technicianName, rating);
-                            }
-                          },
-                          child: Text('Rate'),
+                        Text(
+                          'Technician Name: ${bookingData['technicianName']}',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Handle complaint button press
-                          },
-                          child: Text('Complaint'),
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Booking ID: ${bookingData['bookingId']}',
+                          style: TextStyle(fontSize: 16.0),
                         ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Service Type: ${bookingData['servicetype']}',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Booked Time: ${_formatTimestamp(bookedTime)}',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          'User: ${bookingData['user']}',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Technician Email: ${bookingData['technicianEmail']}',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        SizedBox(height: 16.0),
+                        if (!bookingData['status'])
+                          Text(
+                            'The service provider will get to you soon',
+                            style: TextStyle(fontSize: 16.0),
+                          )
+                        else
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  int? rating =
+                                      await _showRatingDialog(context);
+                                  if (rating != null) {
+                                    await _updateTechnicianRating(
+                                        bookingData['technicianName'], rating);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // Button color
+                                  onPrimary: Colors.white, // Text color
+                                ),
+                                child: Text('Rate'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ComplaintPage(
+                                        technicianName:
+                                            bookingData['technicianName'],
+                                        user: bookingData['user'],
+                                        bookingId: bookingData['bookingId'],
+                                        bookingTime: bookedTime,
+                                        technicianEmail:
+                                            bookingData['technicianEmail'],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // Button color
+                                  onPrimary: Colors.white, // Text color
+                                ),
+                                child: Text('Complaint'),
+                              ),
+                            ],
+                          ),
                       ],
                     ),
-                ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
+  }
+
+  String _formatTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
   }
 
   Future<int?> _showRatingDialog(BuildContext context) async {

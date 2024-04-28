@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../pages/servicepage.dart';
-import '../data/serviceMap.dart';
 
 class CategoryPage extends StatelessWidget {
   final CollectionReference categories =
@@ -17,10 +16,10 @@ class CategoryPage extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Categories',
+            'Services',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          backgroundColor: Colors.blue[100],
+          backgroundColor: Colors.blue[200],
         ),
         body: StreamBuilder<QuerySnapshot>(
           stream: categories.snapshots(),
@@ -79,10 +78,11 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8.0),
+      margin: EdgeInsets.all(6.0),
       color: Theme.of(context).cardColor,
       child: InkWell(
         onTap: () {
+          print(category.name);
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -93,16 +93,25 @@ class CategoryCard extends StatelessWidget {
           );
         },
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(12.0),
           child: Row(
             children: [
-              Image.network(
-                category.imageURL,
-                width: 48.0,
-                height: 48.0,
+              Expanded(
+                flex: 1,
+                child: AspectRatio(
+                  aspectRatio: 1.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      category.imageURL,
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                ),
               ),
               SizedBox(width: 16.0),
               Expanded(
+                flex: 3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -129,6 +138,8 @@ class CategoryCard extends StatelessWidget {
     );
   }
 }
+
+
 
 // class CategoryDetailPage extends StatelessWidget {
 //   final Category category;

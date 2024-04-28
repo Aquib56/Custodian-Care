@@ -66,6 +66,31 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
     print(
         'Number of documents found: ${snapshot.docs.length}'); // Print # of documents
 
+    if (snapshot.docs.isEmpty) {
+      // No technicians found for the selected categories
+      print('No technicians found for the selected categories.');
+      // Show a pop-up dialog to the user
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('No Technicians Found'),
+            content: Text(
+                'There are no technicians available for the selected service categories.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     // Find technician with closest pincode and highest rating
     double minPincodeDifference = double.infinity;
     Technician? closestTechnician;
@@ -99,49 +124,101 @@ class _TechnicianDetailPageState extends State<TechnicianDetailPage> {
             Text('Top Technician for ${widget.selectedCategories.join(', ')}'),
       ),
       body: _highestRatedTechnician != null
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Name: ${_highestRatedTechnician!.name}',
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                  SizedBox(height: 16.0),
-                  Text(
-                    'Rating: ${_highestRatedTechnician!.rating.toStringAsFixed(1)}',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    'Email: ${_highestRatedTechnician!.email}',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    'Location: ${_highestRatedTechnician!.location}',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    'Phone Number: ${_highestRatedTechnician!.phoneNumber}',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    'Pincode: ${_highestRatedTechnician!.pincode}',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    'Selected Categories: ${widget.selectedCategories.join(', ')}',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => _initiateBooking(context),
-                    child: Text("Confirm"),
-                  ),
-                ],
+          ? SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _highestRatedTechnician!.name,
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 16),
+                          ListTile(
+                            leading: Icon(Icons.star),
+                            title: Text(
+                              'Rating: ${_highestRatedTechnician!.rating.toStringAsFixed(1)}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.email),
+                            title: Text(
+                              'Email: ${_highestRatedTechnician!.email}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.location_on),
+                            title: Text(
+                              'Location: ${_highestRatedTechnician!.location}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.phone),
+                            title: Text(
+                              'Phone Number: ${_highestRatedTechnician!.phoneNumber}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.pin),
+                            title: Text(
+                              'Pincode: ${_highestRatedTechnician!.pincode}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.category),
+                            title: Text(
+                              'Selected Categories:',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            subtitle: Text(
+                              widget.selectedCategories.join(', '),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 32),
+                  ],
+                ),
               ),
             )
           : Center(
               child: CircularProgressIndicator(),
             ),
+      bottomNavigationBar: _highestRatedTechnician != null
+          ? Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(16),
+              child: ElevatedButton(
+                onPressed: () => _initiateBooking(context),
+                child: Text(
+                  "Confirm Booking",
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                ),
+              ),
+            )
+          : null,
     );
   }
 
