@@ -51,7 +51,7 @@ class _TechBookingsPageState extends State<TechBookingsPage> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Tech Bookings'),
+          title: Text('Bookings'),
           backgroundColor: Colors.blue[100],
         ),
         body: Column(

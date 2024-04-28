@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../user/pages/home.dart';
 import '../user/pages/category.dart';
 import 'pages/technician_bookings.dart';
+import 'pages/tech_complaints.dart';
 import 'pages/tech_profile.dart';
 
 class TechBottomNavBar extends StatefulWidget {
@@ -15,7 +16,7 @@ class _TechBottomNavBarState extends State<TechBottomNavBar> {
   final List<Widget> _pages = [
     HomePage(),
     TechBookingsPage(),
-    ProfilePage(),
+    TechComplaintsPage(),
     ProfilePage(),
   ];
 
