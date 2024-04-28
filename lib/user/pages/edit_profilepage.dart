@@ -78,34 +78,43 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit Profile'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20.0),
-              _buildInputField(_firstNameController, 'First Name'),
-              _buildInputField(_lastNameController, 'Last Name'),
-              _buildInputField(_addressController, 'Address'),
-              _buildInputField(_pincodeController, 'Pincode',
-                  keyboardType: TextInputType.number),
-              _buildInputField(_phoneNumberController, 'Phone Number',
-                  keyboardType: TextInputType.phone),
-              SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: _updateProfile,
-                child: Text('Submit'),
-              ),
-            ],
+        appBar: AppBar(
+          title: Text('Edit Profile'),
+          centerTitle: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20.0),
+                _buildInputField(_firstNameController, 'First Name'),
+                _buildInputField(_lastNameController, 'Last Name'),
+                _buildInputField(_addressController, 'Address'),
+                _buildInputField(_pincodeController, 'Pincode',
+                    keyboardType: TextInputType.number),
+                _buildInputField(_phoneNumberController, 'Phone Number',
+                    keyboardType: TextInputType.phone),
+                SizedBox(height: 20.0),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+        bottomNavigationBar: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(16),
+          child: ElevatedButton(
+            onPressed: _updateProfile,
+            child: Text(
+              "Save",
+              style: TextStyle(color: Colors.white),
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            ),
+          ),
+        ));
   }
 
   Widget _buildInputField(TextEditingController controller, String labelText,

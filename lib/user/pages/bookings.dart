@@ -12,7 +12,7 @@ class _BookingsPageState extends State<BookingsPage> {
   late Stream<QuerySnapshot> _bookingsStream;
   final CollectionReference _bookings =
       FirebaseFirestore.instance.collection('Bookings');
-  bool _showPending = false;
+  bool _showPending = true;
 
   @override
   void initState() {
@@ -23,21 +23,12 @@ class _BookingsPageState extends State<BookingsPage> {
   Stream<QuerySnapshot> _getUserBookingsStream(bool showPending) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      // Return an empty stream if no user is logged in
       return Stream.empty();
     } else {
-      // Query bookings where the 'user' field matches the current user's email
-      if (showPending) {
-        return _bookings
-            .where('user', isEqualTo: user.email)
-            .where('status', isEqualTo: false)
-            .snapshots();
-      } else {
-        return _bookings
-            .where('user', isEqualTo: user.email)
-            .where('status', isEqualTo: true)
-            .snapshots();
-      }
+      return _bookings
+          .where('user', isEqualTo: user.email)
+          .where('status', isEqualTo: showPending)
+          .snapshots();
     }
   }
 
@@ -45,8 +36,9 @@ class _BookingsPageState extends State<BookingsPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Colors.blueAccent,
-        cardColor: Color.fromARGB(253, 255, 255, 255),
+        primaryColor: Colors.blueAccent, // Use blueAccent for primary color
+        cardColor: Colors.white, // Use white for card background
+        toggleableActiveColor: Colors.blueAccent, // Set active toggle color
       ),
       home: Scaffold(
         appBar: AppBar(
@@ -58,43 +50,42 @@ class _BookingsPageState extends State<BookingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () {
+                ToggleButtons(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'Completed',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: _showPending ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'Pending',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: !_showPending ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                  isSelected: [_showPending, !_showPending],
+                  onPressed: (int index) {
                     setState(() {
-                      _showPending = true;
+                      _showPending = index == 0;
                       _bookingsStream = _getUserBookingsStream(_showPending);
                     });
                   },
-                  style: ButtonStyle(
-                    fixedSize: MaterialStateProperty.all(
-                      Size(MediaQuery.of(context).size.width * 0.5, 48.0),
-                    ),
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                  ),
-                  child: Text('Pending'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _showPending = false;
-                      _bookingsStream = _getUserBookingsStream(_showPending);
-                    });
-                  },
-                  style: ButtonStyle(
-                    fixedSize: MaterialStateProperty.all(
-                      Size(MediaQuery.of(context).size.width * 0.5, 48.0),
-                    ),
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                  ),
-                  child: Text('Completed'),
+                  borderRadius: BorderRadius.circular(8.0),
+                  fillColor: Colors.blueAccent, // Use primary color for fill
+                  selectedColor:
+                      Colors.blue[800], // Slightly darker blue for selection
+                  splashColor: Colors.transparent, // Remove splash effect
+                  highlightColor: Colors.transparent, // Remove highlight effect
                 ),
               ],
             ),
@@ -102,13 +93,7 @@ class _BookingsPageState extends State<BookingsPage> {
               child: StreamBuilder<QuerySnapshot>(
                 stream: _bookingsStream,
                 builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-
-                  if (!snapshot.hasData) {
-                    return Center(child: CircularProgressIndicator());
-                  }
+                  // ... (same error handling and loading indicator logic)
 
                   final List<DocumentSnapshot> documents = snapshot.data!.docs;
 

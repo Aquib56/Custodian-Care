@@ -387,7 +387,7 @@ final List<ServiceTile> services = [
     title: 'Gardener',
     // page: GardenerPage(),
     page: ServiceDetailPage(
-      serviceKey: "Painting",
+      serviceKey: "Gardening",
     ),
   ),
   ServiceTile(
@@ -395,7 +395,7 @@ final List<ServiceTile> services = [
     title: 'Maid',
     // page: MaidPage(),
     page: ServiceDetailPage(
-      serviceKey: "Painting",
+      serviceKey: "Maid",
     ),
   ),
   ServiceTile(
@@ -403,7 +403,7 @@ final List<ServiceTile> services = [
     title: 'Hair Care',
     // page: MaidPage(),
     page: ServiceDetailPage(
-      serviceKey: "Painting",
+      serviceKey: "Haircare",
     ),
   ),
   ServiceTile(
@@ -411,7 +411,7 @@ final List<ServiceTile> services = [
     title: 'Pest Control',
     // page: MaidPage(),
     page: ServiceDetailPage(
-      serviceKey: "Painting",
+      serviceKey: "Pestcontrol",
     ),
   ),
   ServiceTile(
@@ -419,7 +419,7 @@ final List<ServiceTile> services = [
     title: 'Tutions',
     // page: MaidPage(),
     page: ServiceDetailPage(
-      serviceKey: "Painting",
+      serviceKey: "Tutoring",
     ),
   ),
   ServiceTile(
