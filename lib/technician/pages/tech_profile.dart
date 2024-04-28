@@ -27,7 +27,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _getTechnicianData() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      print('1111111111111111111111111111111111111111111111');
       setState(() {
         _technicianEmail = user.email;
       });
