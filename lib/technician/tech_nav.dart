@@ -39,12 +39,12 @@ class _TechBottomNavBarState extends State<TechBottomNavBar> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.receipt_rounded),
             label: 'Bookings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long_sharp),
+            label: 'Complaints',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
