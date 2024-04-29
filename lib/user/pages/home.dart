@@ -4,8 +4,7 @@ import '../auth/login.dart';
 import '../pages/servicepage.dart';
 import '../pages/location&map.dart';
 import '../pages/category.dart';
-import '../pages/preLogin.dart';
-import '../data/serviceMap.dart';
+import '../pages/profile.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -37,7 +36,7 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
+                MaterialPageRoute(builder: (context) => ProfilePage()),
               );
             },
           ),
